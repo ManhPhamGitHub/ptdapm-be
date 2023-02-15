@@ -1,3 +1,4 @@
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 // Connect database
@@ -11,10 +12,15 @@ const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const app = express();
+app.use(bodyParser.json()); 
+const routes = require("./src/routes/index");
+routes(app)
 
-// Middlewares
+
+
+//Middlewares
 app.use(cors());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(helmet());
 app.use(morgan("common"));
 
