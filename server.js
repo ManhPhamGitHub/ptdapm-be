@@ -14,12 +14,14 @@ const app = express();
 
 // Middlewares
 app.use(cors());
-app.use(bodyParser.json());
 app.use(helmet());
+app.use(bodyParser.json());
+const routes = require("./src/routes/v1/sendMail");
+routes(app)
 app.use(morgan("common"));
 
 // Routing app
-app.use(require("./src/routes/index"));
+// app.use(require("./src/routes/v1/sendMail"));
 
 // Error handler
 app.all("*", (req, res, next) => {
