@@ -3,11 +3,11 @@ require("dotenv").config();
 // Connect database
 const { connectDatabase } = require("./src/configs/database");
 connectDatabase();
-
 const errorHandler = require("./src/middlewares/errorHandler");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const app = express();
@@ -17,6 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(morgan("common"));
+app.use(cookieParser());
 
 // Routing app
 app.use(require("./src/routes/index"));
