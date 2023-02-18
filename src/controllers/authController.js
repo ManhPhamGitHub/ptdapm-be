@@ -1,5 +1,6 @@
 const User = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 let refreshTokens = [];
 
@@ -28,11 +29,18 @@ const authController = {
 
   loginUser: async (req, res, next) => {
     try {
-      const { email, username } = req.body;
-      const user = await User.findOne({ email, username });
+      const { email } = req.body;
+      const user = await User.findOne({ email });
 
       if (!user) {
-        return res.status(404).json("Incorrect UserName or Email");
+        return res.status(404).json("Incorrect Email");
+      }
+      const passwordCheck = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      if (!passwordCheck) {
+        return res.status(404).json("Incorrect Password");
       }
 
       const accessToken = authController.generateAccessToken(user);
@@ -47,7 +55,8 @@ const authController = {
         sameSite: "strict",
       });
 
-      res.status(200).json({ user, accessToken });
+      const { password, ...more } = user._doc;
+      res.status(200).json({ ...more, accessToken });
     } catch (err) {
       next(err);
     }
