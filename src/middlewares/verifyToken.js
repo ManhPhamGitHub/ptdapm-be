@@ -17,23 +17,23 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-const verifyTokenAndUserAuthorization = (req, res, next) => {
-  verifyToken(req, res, () => {
-    if (
-      req.user.role === "Employee" ||
-      req.user.role === "HR" ||
-      req.user.role === "Admin"
-    ) {
-      next(err);
-    } else {
-      res.status(403).json("You're not allowed to do that!");
-    }
-  });
-};
+// const verifyTokenAndUserAuthorization = (req, res, next) => {
+//   verifyToken(req, res, () => {
+//     if (
+//       req.user.role === "Employee" ||
+//       req.user.role === "HR" ||
+//       req.user.role === "Admin"
+//     ) {
+//       next(err);
+//     } else {
+//       res.status(403).json("You're not allowed to do that!");
+//     }
+//   });
+// };
 
 const verifyTokenAndHR = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.role === "HR" || req.user.role === "Admin") {
+    if (req.user.role.includes("Admin") && req.user.role.includes("HR")) {
       next();
     } else {
       res.status(403).json("You're not allowed to do that!");
@@ -43,7 +43,8 @@ const verifyTokenAndHR = (req, res, next) => {
 
 const verifyTokenAndAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.role === "Admin") {
+    console.log(req.user);
+    if (req.user.role.includes("Admin")) {
       next();
     } else {
       res.status(403).json("You're not allowed to do that!");
@@ -53,7 +54,7 @@ const verifyTokenAndAdmin = (req, res, next) => {
 
 module.exports = {
   verifyToken,
-  verifyTokenAndUserAuthorization,
+  // verifyTokenAndUserAuthorization,
   verifyTokenAndAdmin,
   verifyTokenAndHR,
 };
