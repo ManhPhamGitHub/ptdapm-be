@@ -34,27 +34,32 @@ const positionSchema = new mongoose.Schema({
   ],
 });
 
-const departmentSchema = new mongoose.Schema({
-  code: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  departmentChair: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employee",
-  },
-  employeesId: [
-    {
+const departmentSchema = new mongoose.Schema(
+  {
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    departmentChair: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Employee",
     },
-  ],
-  positions: [positionSchema],
-});
+    employeesId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Employee",
+      },
+    ],
+    positions: [positionSchema],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("Department", departmentSchema);

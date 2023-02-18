@@ -17,33 +17,38 @@ const holidaySchema = new mongoose.Schema({
   },
 });
 
-const benefitSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  standardLeave: {
-    // số ngày nghỉ
-    type: Number,
-  },
-  month: {
-    type: Number,
-  },
-  beneficiariesId: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Employee",
+const benefitSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
-  holiday: [holidaySchema],
-  status: {
-    type: String,
-    default: "unactive",
+    description: {
+      type: String,
+      required: true,
+    },
+    standardLeave: {
+      // số ngày nghỉ
+      type: Number,
+    },
+    month: {
+      type: Number,
+    },
+    beneficiariesId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Employee",
+      },
+    ],
+    holiday: [holidaySchema],
+    status: {
+      type: String,
+      default: "unactive",
+    },
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("Benefit", benefitSchema);
