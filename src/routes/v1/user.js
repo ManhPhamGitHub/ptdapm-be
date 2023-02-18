@@ -6,5 +6,8 @@ const {
 } = require("../../middlewares/verifyToken");
 
 router.post("/register", verifyTokenAndAdmin, userController.registerUser);
+router.get("/", userController.getUserPagination);
+router.put("/:id", verifyTokenAndAdmin, userController.updateUser);
+router.delete("/:id", verifyTokenAndAdmin, userController.deleteUser);
 
 module.exports = router;
