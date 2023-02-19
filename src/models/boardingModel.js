@@ -1,15 +1,20 @@
 const mongoose = require("mongoose");
 
-const onBoarding = new mongoose.Schema({
-  employeeId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employee",
+const onBoarding = new mongoose.Schema(
+  {
+    employeeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+    },
+    startDate: {
+      type: Date,
+      require: true,
+    },
   },
-  startDate: {
-    type: Date,
-    require: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const offBoarding = new mongoose.Schema(
   {
@@ -33,9 +38,14 @@ const offBoarding = new mongoose.Schema(
   }
 );
 
-const Boarding = new mongoose.Schema({
-  onBoarding: [onBoarding],
-  offBoarding: [offBoarding],
-});
+const Boarding = new mongoose.Schema(
+  {
+    onBoarding: [onBoarding],
+    offBoarding: [offBoarding],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("Boarding", Boarding);
