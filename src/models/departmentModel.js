@@ -18,21 +18,21 @@ const positionSchema = new mongoose.Schema(
         ref: "Department",
       },
     ],
-    salary: [
-      {
-        rank: {
-          type: Number,
-          default: 1,
-        },
-        salaryBasic: {
-          type: Number,
-          default: 5000000,
-        },
-        actualSalary: {
-          type: Number,
-        },
-      },
-    ],
+    // salary: [
+    //   {
+    //     rank: {
+    //       type: Number,
+    //       default: 1,
+    //     },
+    //     salaryBasic: {
+    //       type: Number,
+    //       default: 5000000,
+    //     },
+    //     actualSalary: {
+    //       type: Number,
+    //     },
+    //   },
+    // ],
   },
   {
     timestamps: true,
