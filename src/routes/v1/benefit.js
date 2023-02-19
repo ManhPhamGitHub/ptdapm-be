@@ -1,7 +1,7 @@
+const benefitController = require("../../controllers/benefitController");
+
 const router = require("express").Router();
 
-router.get("/", (req, res) => {
-  res.json("benefit");
-});
+router.post("/", benefitController.createBenefit);
 
 module.exports = router;

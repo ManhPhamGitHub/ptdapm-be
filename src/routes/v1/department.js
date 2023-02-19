@@ -1,7 +1,6 @@
 const router = require("express").Router();
+const departmentController = require("../../controllers/departmentController.js");
 
-router.get("/", (req, res) => {
-  res.json("department");
-});
+router.post("/", departmentController.createDepartment);
 
 module.exports = router;
