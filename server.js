@@ -10,6 +10,9 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const { fileURLToPath } = require("url");
+const path = require("path");
+const upload = require("./src/middlewares/fileUpload.js");
 const app = express();
 
 // Middlewares
@@ -18,6 +21,10 @@ app.use(bodyParser.json());
 app.use(helmet());
 app.use(morgan("common"));
 app.use(cookieParser());
+
+// multer
+app.use(upload.any());
+app.use("/uploads", express.static(path.join(__dirname, "/src/public/image")));
 
 // Routing app
 app.use(require("./src/routes/index"));
@@ -32,5 +39,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
+  console.log(__dirname);
   console.log(`Server is running on port: ${PORT}`);
 });
