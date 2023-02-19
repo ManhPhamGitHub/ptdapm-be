@@ -54,13 +54,6 @@ const employeeSchema = new mongoose.Schema(
         ref: "Contract",
       },
     ],
-    salary: {
-      type: Number,
-    },
-    role: {
-      type: String,
-      required: true,
-    },
     status: {
       type: String,
       default: "unactive",

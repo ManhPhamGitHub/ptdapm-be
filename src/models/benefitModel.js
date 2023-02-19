@@ -1,21 +1,26 @@
 const mongoose = require("mongoose");
 
-const holidaySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
+const holidaySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    startData: {
+      type: Date,
+    },
+    endData: {
+      type: Date,
+    },
+    description: {
+      type: String,
+    },
   },
-  startData: {
-    type: Date,
-  },
-  endData: {
-    type: Date,
-  },
-  description: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const benefitSchema = new mongoose.Schema(
   {
