@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const employeeSchema = new mongoose.Schema(
   {
-    code: {
+    codeEmployee: {
       type: String,
       required: true,
       unique: true,
@@ -28,8 +28,11 @@ const employeeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    picturePath: {
+      type: String,
+    },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
     },
     departMentId: [
@@ -56,7 +59,7 @@ const employeeSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      default: "unactive",
+      default: "Active",
     },
   },
   {
