@@ -27,8 +27,9 @@ const userController = {
   },
 
   getUserPagination: async (req, res, next) => {
-    const activePage = +req.query._page || 1;
-    const limit = +req.query._limit || 5;
+    const activePage = +req.query.page || 1;
+    const limit = +req.query.limit || 5;
+
     const queryEmail = req.query.q;
     const queryRole = req.query.role;
     const queryStatus = req.query.status;
@@ -66,6 +67,18 @@ const userController = {
         .exec();
 
       return res.status(200).json(userList);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getUser: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      const user = await User.findById(id);
+
+      res.status(200).json(user);
     } catch (err) {
       next(err);
     }
