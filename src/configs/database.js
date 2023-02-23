@@ -6,8 +6,8 @@ const connectDatabase = () => {
     .then(() => {
       console.log("DATABASE connect success !!!");
     })
-    .catch(() => {
-      console.log("DATABASE connect failed !!!");
+    .catch((error) => {
+      console.log("DATABASE connect failed !!!",error);
     });
 };
 
