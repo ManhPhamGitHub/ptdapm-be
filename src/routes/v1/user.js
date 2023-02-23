@@ -7,6 +7,7 @@ const {
 
 router.post("/register", verifyTokenAndAdmin, userController.registerUser);
 router.get("/", userController.getUserPagination);
+router.get("/find/:id", userController.getUser);
 router.put("/:id", verifyTokenAndAdmin, userController.updateUser);
 router.delete("/:id", verifyTokenAndAdmin, userController.deleteUser);
 
