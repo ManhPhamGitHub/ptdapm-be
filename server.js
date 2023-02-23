@@ -20,7 +20,9 @@ app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
 const routes = require("./src/routes/v1/sendMail");
+const routesEmployee = require("./src/routes/v1/employee");
 routes(app)
+routesEmployee(app)
 app.use(morgan("common"));
 app.use(cookieParser());
 
