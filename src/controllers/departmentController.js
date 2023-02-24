@@ -135,16 +135,16 @@ const departmentController = {
           );
           department.employeesId = updatedEmployees;
 
-          // return department.save();
+          return department.save();
         })
         .then(() => {
-          // return Employee.updateOne(
-          //   { _id: employeeId },
-          //   {
-          //     $pull: { departMentId: departmentId },
-          //     $set: { position: "" },
-          //   }
-          // );
+          return Employee.updateOne(
+            { _id: employeeId },
+            {
+              $pull: { departMentId: departmentId },
+              $set: { position: "" },
+            }
+          );
         });
 
       res.status(200).json("SUCCESS");
