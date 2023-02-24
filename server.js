@@ -19,19 +19,11 @@ const app = express();
 app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
-const routes = require("./src/routes/v1/sendMail");
-const routesEmployee = require("./src/routes/v1/employee");
-routes(app)
-routesEmployee(app)
 app.use(morgan("common"));
 app.use(cookieParser());
 
-// multer
-app.use(upload.any());
-app.use("/uploads", express.static(path.join(__dirname, "/src/public/image")));
-
 // Routing app
-// app.use(require("./src/routes/v1/sendMail"));
+app.use(require("./src/routes/index"));
 
 // Error handler
 app.all("*", (req, res, next) => {
