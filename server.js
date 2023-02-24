@@ -18,8 +18,8 @@ app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
 
-const routes = require('./src/routes/index')
-app.use(routes)
+const routes = require("./src/routes/index");
+app.use(routes);
 app.use(morgan("common"));
 app.use(cookieParser());
 
