@@ -8,10 +8,10 @@ const generateUrl = async (filename, bucketPath) => {
     const params = {
         Bucket: BUCKET_NAME,
         Key: `${bucketPath}/${filename}`,
-        Expires: 60,
+        Expires: 6000,
         ACL: 'public-read'
     }
-
+    console.log("params",);
     try {
         signedUrl = await s3.getSignedUrlPromise('putObject', params);
     } catch (err) {
@@ -23,7 +23,7 @@ const generateUrl = async (filename, bucketPath) => {
 }
 
 const getPublicUrl = (filename, bucketPath) => {
-    const publicUrl = `https://s3.amazonaws.com/${BUCKET_NAME}/${bucketPath}/${filename}`
+    const publicUrl = `https://ptdapm-storage.s3.amazonaws.com/assest/image/${filename}`
 
     return publicUrl;
 }
