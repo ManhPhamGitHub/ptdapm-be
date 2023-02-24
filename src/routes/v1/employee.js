@@ -5,4 +5,3 @@ router.post("/", employeeController.createEmployee);
 router.get("/", employeeController.getEmployeePagination);
 
 module.exports = router;
-
