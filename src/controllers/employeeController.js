@@ -9,7 +9,7 @@ const employeeController = {
     const queryPosition = req.query.position;
 
     try {
-      const picturePath = req?.files[0]?.filename;
+      const picturePath = req?.files?.length > 0 ? req.files[0].name : null
       const {
         codeEmployee,
         name,
