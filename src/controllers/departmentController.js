@@ -78,25 +78,27 @@ const departmentController = {
       console.log("vo");
       const { id } = req.params;
 
-      await Department.findById(id)
-        .then((department) => {
-          if (!department) {
-            res.status(404).json("Department not found");
+      const deleteDepartment = {
+        $set: {
+          is_deleted: true,
+          employeesId: [],
+          "positions.$[].employeeId": [],
+        },
+      };
+
+      await Department.findByIdAndUpdate(id, deleteDepartment).then(() => {
+        return Employee.updateMany(
+          { departMentId: id },
+          {
+            $pull: { departMentId: id },
+            $set: { position: "" },
           }
-          return department.deleteOne();
-        })
-        .then(() => {
-          return Employee.updateMany(
-            { departMentId: id },
-            {
-              $pull: { departMentId: id },
-              $set: { position: "" },
-            }
-          );
-        })
-        .then(() => {
-          res.status(200).json("SUCCESS");
-        });
+        );
+      });
+
+      res
+        .status(200)
+        .json({ status: true, msg: "Delete Department Successfully" });
     } catch (err) {
       next(err);
     }
@@ -105,7 +107,9 @@ const departmentController = {
   updateDepartment: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const updateDepartment = await Department.findByIdAndUpdate(
+      console.log(id);
+      console.log(req.body);
+      await Department.findByIdAndUpdate(
         id,
         {
           $set: req.body,
@@ -130,10 +134,24 @@ const departmentController = {
           if (!department) {
             res.status(404).json("Department not found");
           }
+
+          // delete employeeId cuar department
           const updatedEmployees = department.employeesId.filter(
             (e) => e._id.toString() !== employeeId
           );
           department.employeesId = updatedEmployees;
+
+          // delete employeeId cuar position
+          const positionOfEm = department.positions.find((pos) =>
+            pos.employeeId.includes(employeeId)
+          );
+
+          if (positionOfEm) {
+            const index = positionOfEm.employeeId.indexOf(employeeId);
+            if (index !== -1) {
+              positionOfEm.employeeId.splice(index, 1);
+            }
+          }
 
           return department.save();
         })
