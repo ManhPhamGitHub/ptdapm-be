@@ -50,6 +50,10 @@ const benefitSchema = new mongoose.Schema(
       type: String,
       default: "unactive",
     },
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

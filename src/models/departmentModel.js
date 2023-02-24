@@ -35,6 +35,10 @@ const departmentSchema = new mongoose.Schema(
       },
     ],
     positions: [positionSchema],
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
