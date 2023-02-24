@@ -15,7 +15,6 @@ const generateUrl = async (filename, bucketPath) => {
         Expires: 6000,
         ACL: 'public-read'
     }
-    console.log("params",);
     try {
         signedUrl = await s3.getSignedUrlPromise('putObject', params);
     } catch (err) {
