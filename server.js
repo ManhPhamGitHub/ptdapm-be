@@ -39,6 +39,5 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(__dirname);
   console.log(`Server is running on port: ${PORT}`);
 });
