@@ -135,13 +135,10 @@ const benefitController = {
       console.log("vo");
       const { id } = req.params;
 
-      await Benefit.findById(id)
-        .then((benefit) => {
-          if (!benefit) {
-            res.status(404).json("Benefit not found");
-          }
-          return benefit.deleteOne();
-        })
+      await Benefit.findByIdAndUpdate(id, {
+        is_deleted: true,
+        beneficiariesId: [],
+      })
         .then(() => {
           return Employee.updateMany(
             { benefitId: id },
