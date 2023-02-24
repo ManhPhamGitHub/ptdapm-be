@@ -61,7 +61,7 @@ const userController = {
       userList.totalPage = totalPage;
       userList.activePage = activePage;
 
-      userList.userList = await User.find(query) // find ra theo query
+      userList.userList = await User.find(query, "-password") // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();

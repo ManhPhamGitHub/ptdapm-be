@@ -22,7 +22,8 @@ const employeeSchema = new mongoose.Schema(
     },
     BirthOfDate: {
       type: Date,
-      required: true,
+
+      default: new Date(),
     },
     gender: {
       type: String,
@@ -43,7 +44,7 @@ const employeeSchema = new mongoose.Schema(
     ],
     position: {
       type: String,
-      required: true,
+      default: "",
     },
     benefitId: [
       {
@@ -55,6 +56,21 @@ const employeeSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Contract",
+      },
+    ],
+    salary: [
+      {
+        rank: {
+          type: Number,
+          default: 1,
+        },
+        salaryBasic: {
+          type: Number,
+          default: 5000000,
+        },
+        actualSalary: {
+          type: Number,
+        },
       },
     ],
     status: {

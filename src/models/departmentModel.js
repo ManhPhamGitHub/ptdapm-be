@@ -11,21 +11,6 @@ const positionSchema = new mongoose.Schema({
       ref: "Employee",
     },
   ],
-  // salary: [
-  //   {
-  //     rank: {
-  //       type: Number,
-  //       default: 1,
-  //     },
-  //     salaryBasic: {
-  //       type: Number,
-  //       default: 5000000,
-  //     },
-  //     actualSalary: {
-  //       type: Number,
-  //     },
-  //   },
-  // ],
 });
 
 const departmentSchema = new mongoose.Schema(

@@ -6,9 +6,10 @@ const employeeController = {
   createEmployee: async (req, res, next) => {
     const queryDepartment = req.query.department;
     const queryBenefit = req.query.benefit;
+    const queryPosition = req.query.position;
 
     try {
-      const picturePath = req.files[0].filename;
+      const picturePath = req?.files[0]?.filename;
       const {
         codeEmployee,
         name,
@@ -17,55 +18,104 @@ const employeeController = {
         BirthOfDate,
         gender,
         phoneNumber,
-        position,
+        status,
+        rank,
+        salaryBasic,
       } = req.body;
 
-      const department = await Department.findById(queryDepartment);
-      const benefit = await Benefit.findById(queryBenefit);
+      let department = null;
+      let benefit = null;
 
-      const newEmployee = new Employee({
-        codeEmployee,
-        name,
-        email,
-        address,
-        BirthOfDate,
-        gender,
-        phoneNumber,
-        picturePath,
-        position,
-      });
+      let employee = await Employee.findOne({ codeEmployee });
+      console.log(queryPosition);
+      if (!employee) {
+        employee = new Employee({
+          codeEmployee,
+          name,
+          email,
+          address,
+          BirthOfDate,
+          gender,
+          phoneNumber,
+          picturePath,
+          status,
+        });
+      } else {
+        employee.name = name;
+        employee.email = email;
+        employee.address = address;
+        employee.BirthOfDate = BirthOfDate;
+        employee.gender = gender;
+        employee.phoneNumber = phoneNumber;
+        employee.picturePath = picturePath;
+        employee.status = status;
+      }
 
-      //==== add vào department ====
-      if (department) {
-        department.employeesId.push(newEmployee._id);
+      // update department và position cũ nếu đổi phòng va vị trí
+      const oldDepartment = await Department.findById(employee.departMentId);
+      if (oldDepartment) {
+        const index = oldDepartment.employeesId.indexOf(employee._id);
 
-        const checkPosition = department.positions.find(
-          (pos) => pos.name === position
+        if (index !== -1) {
+          oldDepartment.employeesId.splice(index, 1);
+          await oldDepartment.save();
+        }
+
+        const oldPosition = oldDepartment.positions.find((pos) =>
+          pos.employeeId.includes(employee._id)
         );
 
-        console.log(checkPosition);
-        if (!checkPosition) {
-          const newPosition = {
-            name: position,
-            employeeId: [newEmployee._id],
-          };
-
-          department.positions.push(newPosition);
-        } else {
-          checkPosition.employeeId.push(newEmployee._id);
+        if (oldPosition) {
+          const index = oldPosition.employeeId.indexOf(employee._id);
+          if (index !== -1) {
+            oldPosition.employeeId.splice(index, 1);
+            await oldDepartment.save();
+          }
         }
-        newEmployee.departMentId.push(department._id);
       }
 
-      // ==== add benefit ====
-      if (benefit) {
-        benefit.beneficiariesId.push(newEmployee._id);
-        newEmployee.benefitId.push(benefit._id);
+      // Xử lý department
+      if (queryDepartment) {
+        department = await Department.findById(queryDepartment);
+
+        if (!department)
+          return res.status(400).json({ message: "Department not found" });
+
+        if (!department.employeesId.includes(employee._id)) {
+          department.employeesId.push(employee._id);
+        }
+
+        const checkPosition = department.positions.find(
+          (pos) => pos.id === queryPosition
+        );
+
+        if (!checkPosition?.employeeId.includes(employee._id)) {
+          checkPosition?.employeeId.push(employee._id);
+        }
+        employee.position = checkPosition?.name;
       }
 
-      await newEmployee.save();
-      await benefit.save();
-      await department.save();
+      if (!employee.departMentId.includes(department._id)) {
+        employee.departMentId = department._id;
+      }
+
+      // Xử lý benefit
+      if (queryBenefit) {
+        benefit = await Benefit.findById(queryBenefit);
+
+        if (!benefit) {
+          return res.status(400).json({ message: "Benefit not found" });
+        }
+
+        if (!benefit.beneficiariesId.includes(employee._id)) {
+          benefit.beneficiariesId.push(employee._id);
+          employee.benefitId.push(benefit._id);
+        }
+      }
+
+      await employee.save();
+      if (department) await department.save();
+      if (benefit) await benefit.save();
 
       res.status(200).json("SUCCESS");
     } catch (err) {
