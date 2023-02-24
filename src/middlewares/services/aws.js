@@ -1,6 +1,10 @@
 const AWS = require('aws-sdk');
 const BUCKET_NAME = process.env.BUCKET_NAME;
-const s3 = new AWS.S3({signatureVersion: 'v4'});
+const s3 = new AWS.S3({
+    signatureVersion: 'v4',
+    accessKeyId:process.env.accessKeyId,
+    secretAccessKey:process.env.secretAccessKey,
+});
 
 const generateUrl = async (filename, bucketPath) => {
     let signedUrl;
