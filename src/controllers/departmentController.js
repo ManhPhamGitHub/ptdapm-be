@@ -181,8 +181,7 @@ const departmentController = {
       const checkPosition = department.positions.find(
         (pos) => pos.name === name
       );
-      if (checkPosition)
-        return res.status(404).json("Department already exists");
+      if (checkPosition) return res.status(404).json("Position already exists");
 
       const newPosition = {
         name,
