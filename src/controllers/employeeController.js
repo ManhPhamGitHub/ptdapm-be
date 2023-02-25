@@ -189,6 +189,22 @@ const employeeController = {
     }
   },
 
+  getDetailEmployee: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      console.log(id);
+
+      const employeeDetail = await Employee.findById(id);
+
+      console.log(employeeDetail);
+
+      res.status(200).json(employeeDetail).populate("departMentId", "name");
+    } catch (err) {
+      next(err);
+    }
+  },
+
   deleteEmployee: async (req, res, next) => {
     try {
       const { id } = req.params;
