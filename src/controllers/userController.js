@@ -66,7 +66,7 @@ const userController = {
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json(userList);
+      return res.status(200).json({ success: true, data: [userList] });
     } catch (err) {
       next(err);
     }
@@ -78,7 +78,7 @@ const userController = {
 
       const user = await User.findById(id);
 
-      res.status(200).json(user);
+      res.status(200).json({ success: true, data: [user] });
     } catch (err) {
       next(err);
     }
@@ -95,14 +95,18 @@ const userController = {
         const user = await User.findById(id);
         // kiểm tra user
         if (!user) {
-          return res.status(404).json({ message: "Incorrect User " });
+          return res
+            .status(404)
+            .json({ success: false, message: "Incorrect User" });
         }
 
         // check password
         const isMatch = await bcrypt.compare(oldPassword, user.password);
 
         if (!isMatch) {
-          return res.status(400).json({ message: "Incorrect Password" });
+          return res
+            .status(404)
+            .json({ success: false, message: "Incorrect Password" });
         }
 
         // mã hóa password mới
@@ -143,14 +147,16 @@ const userController = {
       console.log(checkUser);
       if (checkUser.role.includes("Admin")) {
         res.status(404).json({
-          status: true,
+          success: false,
           msg: "This user is admin so it doesn't delete it",
         });
       } else {
         await User.findByIdAndDelete(id);
       }
 
-      res.status(200).json({ status: true, msg: "User deleted successfully" });
+      res
+        .status(200)
+        .json({ success: true, message: "User deleted successfully" });
     } catch (err) {
       next(err);
     }

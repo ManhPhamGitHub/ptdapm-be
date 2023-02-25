@@ -7,7 +7,10 @@ const benefitController = {
       const { name, description, standardLeave, month, status } = req.body;
 
       const checkBenefit = await Benefit.findOne({ name });
-      if (checkBenefit) return res.status(404).json("Benefit already exists");
+      if (checkBenefit)
+        return res
+          .status(404)
+          .json({ success: false, message: "Benefit already exists" });
       await Benefit.create({
         name,
         description,
@@ -18,7 +21,7 @@ const benefitController = {
         holiday: [],
       });
 
-      res.status(200).json({ status: true, msg: "success" });
+      res.status(200).json({ success: true, message: "success" });
     } catch (err) {
       next(err);
     }
@@ -51,7 +54,7 @@ const benefitController = {
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json(benefitList);
+      return res.status(200).json({ success: true, data: [benefitList] });
     } catch (err) {
       next(err);
     }
@@ -63,7 +66,7 @@ const benefitController = {
 
       const benefit = await Benefit.findById(id);
 
-      res.status(200).json(benefit);
+      res.status(200).json({ success: true, data: [benefit] });
     } catch (err) {
       next(err);
     }
@@ -91,20 +94,24 @@ const benefitController = {
         await benefit.updateOne({ $set: { holiday: holidayFilter } });
         res
           .status(200)
-          .json({ status: true, msg: "holiday delete successfully" });
+          .json({ success: true, message: "holiday delete successfully" });
       } else {
         const checkHoliday = benefit.holiday.find(
           (holi) => holi.name === newHoliday.name
         );
 
         if (checkHoliday) {
-          res.status(404).json("holiday already exists");
+          res
+            .status(404)
+            .json({ success: false, message: "holiday already exists" });
         }
 
         benefit.holiday.push(newHoliday);
 
         benefit.save();
-        res.status(200).json({ status: true, msg: "Add holiday successfully" });
+        res
+          .status(200)
+          .json({ success: true, message: "Add holiday successfully" });
       }
     } catch (err) {
       next(err);
@@ -124,7 +131,9 @@ const benefitController = {
         }
       );
 
-      res.status(200).json({ status: true, msg: "Success" });
+      res
+        .status(200)
+        .json({ success: true, message: "update benefit successfully" });
     } catch (err) {
       next(err);
     }
@@ -146,7 +155,9 @@ const benefitController = {
           );
         })
         .then(() => {
-          res.status(200).json("SUCCESS");
+          res
+            .status(200)
+            .json({ success: true, message: "delete benefit successfully" });
         });
     } catch (err) {
       next(err);
@@ -172,7 +183,9 @@ const benefitController = {
 
       await Benefit.findOneAndUpdate(filterBenefit, updateHoliday);
 
-      res.status(200).json({ status: true, msg: "SUCCESS" });
+      res
+        .status(200)
+        .json({ success: true, message: "update holiday successfully" });
     } catch (err) {
       next(err);
     }
