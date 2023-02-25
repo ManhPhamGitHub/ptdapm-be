@@ -10,17 +10,18 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const path = require("path");
 const app = express();
 
 // Middlewares
 app.use(cors());
-app.use(bodyParser.json());
 app.use(helmet());
+app.use(bodyParser.json());
+
+const routes = require("./src/routes/index");
+app.use(routes);
 app.use(morgan("common"));
 app.use(cookieParser());
-
-// Routing app
-app.use(require("./src/routes/index"));
 
 // Error handler
 app.all("*", (req, res, next) => {

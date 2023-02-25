@@ -22,7 +22,6 @@ const employeeSchema = new mongoose.Schema(
     },
     BirthOfDate: {
       type: Date,
-      required: true,
     },
     gender: {
       type: String,
@@ -43,7 +42,7 @@ const employeeSchema = new mongoose.Schema(
     ],
     position: {
       type: String,
-      required: true,
+      default: "",
     },
     benefitId: [
       {
@@ -57,9 +56,16 @@ const employeeSchema = new mongoose.Schema(
         ref: "Contract",
       },
     ],
+    salaryRank: {
+      type: Number,
+    },
     status: {
       type: String,
       default: "Active",
+    },
+    is_deleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {
