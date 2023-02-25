@@ -1,7 +1,6 @@
 const Employee = require("../models/employeeModel");
 const Department = require("../models/departmentModel");
 const Benefit = require("../models/benefitModel");
-const { populate } = require("../models/departmentModel");
 
 const employeeController = {
   createEmployee: async (req, res, next) => {
@@ -200,7 +199,7 @@ const employeeController = {
 
       console.log(employeeDetail);
 
-      res.status(200).json(employeeDetail);
+      res.status(200).json(employeeDetail).populate("departMentId", "name");
     } catch (err) {
       next(err);
     }
