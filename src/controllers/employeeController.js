@@ -9,7 +9,7 @@ const employeeController = {
     const queryPosition = req.query.position;
 
     try {
-      const picturePath = req?.files?.length > 0 ? req.files[0].name : null
+      const picturePath = req?.files?.length > 0 ? req.files[0].name : null;
       const {
         codeEmployee,
         name,
@@ -19,15 +19,13 @@ const employeeController = {
         gender,
         phoneNumber,
         status,
-        rank,
-        salaryBasic,
+        salaryRank,
       } = req.body;
 
       let department = null;
       let benefit = null;
 
       let employee = await Employee.findOne({ codeEmployee });
-      console.log(queryPosition);
       if (!employee) {
         employee = new Employee({
           codeEmployee,
@@ -38,6 +36,7 @@ const employeeController = {
           gender,
           phoneNumber,
           picturePath,
+          salaryRank,
           status,
         });
       } else {
@@ -49,9 +48,9 @@ const employeeController = {
         employee.phoneNumber = phoneNumber;
         employee.picturePath = picturePath;
         employee.status = status;
+        employee.salaryRank = salaryRank;
       }
 
-      // update department và position cũ nếu đổi phòng va vị trí
       const oldDepartment = await Department.findById(employee.departMentId);
       if (oldDepartment) {
         const index = oldDepartment.employeesId.indexOf(employee._id);
@@ -74,6 +73,16 @@ const employeeController = {
         }
       }
 
+      const oldBenefit = await Benefit.findById(employee.benefitId);
+      if (oldBenefit) {
+        const index = oldBenefit.beneficiariesId.indexOf(employee._id);
+
+        if (index !== -1) {
+          oldBenefit.beneficiariesId.splice(index, 1);
+          await oldBenefit.save();
+        }
+      }
+
       // Xử lý department
       if (queryDepartment) {
         department = await Department.findById(queryDepartment);
@@ -93,10 +102,10 @@ const employeeController = {
           checkPosition?.employeeId.push(employee._id);
         }
         employee.position = checkPosition?.name;
-      }
 
-      if (!employee.departMentId.includes(department._id)) {
-        employee.departMentId = department._id;
+        if (!employee.departMentId.includes(department?._id)) {
+          employee.departMentId = department._id;
+        }
       }
 
       // Xử lý benefit
@@ -109,7 +118,7 @@ const employeeController = {
 
         if (!benefit.beneficiariesId.includes(employee._id)) {
           benefit.beneficiariesId.push(employee._id);
-          employee.benefitId.push(benefit._id);
+          employee.benefitId = benefit._id;
         }
       }
 
@@ -127,6 +136,7 @@ const employeeController = {
     const queryText = req.query.text;
     const queryDepartment = req.query.department;
     const queryPosition = req.query.position;
+    const queryDelete = req.query.is_deleted;
 
     const activePage = +req.query.page || 1;
     const limit = +req.query.limit || 5;
@@ -155,6 +165,10 @@ const employeeController = {
         query.position = { $regex: queryPosition, $options: "i" };
       }
 
+      if (queryDelete) {
+        query.is_deleted = { $eq: queryDelete };
+      }
+
       const totalRecord = await Employee.countDocuments(query);
 
       const totalPage = Math.ceil(totalRecord / limit); // tổng page
@@ -170,6 +184,39 @@ const employeeController = {
         .exec();
 
       res.status(200).json(employeeList);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  deleteEmployee: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      await Employee.findByIdAndUpdate(id, {
+        $set: {
+          is_deleted: true,
+          departMentId: [],
+          benefitId: [],
+          position: "",
+        },
+      }).then(() => {
+        return Department.updateMany(
+          {
+            employeesId: id,
+          },
+          {
+            $pull: {
+              employeesId: id,
+              "positions.$[].employeeId": id,
+            },
+          }
+        );
+      });
+
+      res
+        .status(200)
+        .json({ status: true, msg: "Delete employee Successfully" });
     } catch (err) {
       next(err);
     }
