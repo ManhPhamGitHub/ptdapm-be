@@ -33,14 +33,18 @@ const authController = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        return res.status(404).json("Incorrect Email");
+        return res
+          .status(404)
+          .json({ success: false, message: "Incorrect Email" });
       }
       const passwordCheck = await bcrypt.compare(
         req.body.password,
         user.password
       );
       if (!passwordCheck) {
-        return res.status(404).json("Incorrect Password");
+        return res
+          .status(404)
+          .json({ success: false, message: "Incorrect Password" });
       }
 
       const accessToken = authController.generateAccessToken(user);
@@ -56,7 +60,7 @@ const authController = {
       });
 
       const { password, ...more } = user._doc;
-      res.status(200).json({ ...more, accessToken });
+      res.status(200).json({ success: true, data: [{ ...more, accessToken }] });
     } catch (err) {
       next(err);
     }
@@ -68,9 +72,13 @@ const authController = {
       const refreshToken = req.cookies.refreshToken;
 
       if (!refreshToken)
-        return res.status(404).json("You are not authenticated");
+        return res
+          .status(404)
+          .json({ success: false, message: "You are not authenticated" });
       if (!refreshTokens.includes(refreshToken)) {
-        return res.status(403).json("Refresh token is not valid");
+        return res
+          .status(403)
+          .json({ success: false, message: "Refresh token is not valid" });
       }
       jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
         if (err) {
@@ -90,8 +98,13 @@ const authController = {
           sameSite: "strict",
         });
         res.status(200).json({
-          accessToken: newAccessToken,
-          refreshToken: newRefreshToken,
+          success: true,
+          data: [
+            {
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken,
+            },
+          ],
         });
       });
     } catch (err) {
@@ -107,7 +120,9 @@ const authController = {
       // clear cookie khi logout
       refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
       res.clearCookie("refreshToken");
-      res.status(200).json("Logged out successfully!");
+      res
+        .status(200)
+        .json({ success: true, message: "Logged out successfully!" });
     } catch (err) {
       next(err);
     }

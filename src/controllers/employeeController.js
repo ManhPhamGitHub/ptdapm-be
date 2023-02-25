@@ -88,7 +88,9 @@ const employeeController = {
         department = await Department.findById(queryDepartment);
 
         if (!department)
-          return res.status(400).json({ message: "Department not found" });
+          return res
+            .status(404)
+            .json({ success: false, message: "Department not found" });
 
         if (!department.employeesId.includes(employee._id)) {
           department.employeesId.push(employee._id);
@@ -113,7 +115,9 @@ const employeeController = {
         benefit = await Benefit.findById(queryBenefit);
 
         if (!benefit) {
-          return res.status(400).json({ message: "Benefit not found" });
+          return res
+            .status(404)
+            .json({ success: false, message: "Benefit not found" });
         }
 
         if (!benefit.beneficiariesId.includes(employee._id)) {
@@ -126,7 +130,7 @@ const employeeController = {
       if (department) await department.save();
       if (benefit) await benefit.save();
 
-      res.status(200).json("SUCCESS");
+      res.status(200).json({ success: true, message: "Success" });
     } catch (err) {
       next(err);
     }
@@ -178,12 +182,13 @@ const employeeController = {
       employeeList.activePage = activePage;
 
       employeeList.employeeList = await Employee.find(query)
-        .populate("departMentId", "name") // find ra theo query
+        .populate("departMentId", "name")
+        .sort({ createdAt: -1 }) // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();
 
-      res.status(200).json(employeeList);
+      res.status(200).json({ success: true, data: employeeList });
     } catch (err) {
       next(err);
     }
@@ -199,7 +204,10 @@ const employeeController = {
 
       console.log(employeeDetail);
 
-      res.status(200).json(employeeDetail).populate("departMentId", "name");
+      res
+        .status(200)
+        .json({ success: true, data: employeeDetail })
+        .populate("departMentId", "name");
     } catch (err) {
       next(err);
     }
@@ -232,7 +240,7 @@ const employeeController = {
 
       res
         .status(200)
-        .json({ status: true, msg: "Delete employee Successfully" });
+        .json({ success: true, message: "Delete employee Successfully" });
     } catch (err) {
       next(err);
     }
