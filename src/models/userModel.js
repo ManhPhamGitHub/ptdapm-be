@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Active",
     },
+    user_avatar: {
+      type: String,
+      default: ''
+    }
   },
   {
     timestamps: true,
