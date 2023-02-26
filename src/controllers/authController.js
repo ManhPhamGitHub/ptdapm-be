@@ -60,7 +60,7 @@ const authController = {
       });
 
       const { password, ...more } = user._doc;
-      res.status(200).json({ success: true, data: [{ ...more, accessToken }] });
+      res.status(200).json({ success: true, data: { ...more, accessToken } });
     } catch (err) {
       next(err);
     }
