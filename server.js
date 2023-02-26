@@ -12,11 +12,16 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
 const app = express();
+const multer = require('multer');
+const upload = multer();
 
 // Middlewares
 app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(upload.array()); 
+app.use(express.static('public'));
 
 const routes = require("./src/routes/index");
 app.use(routes);
