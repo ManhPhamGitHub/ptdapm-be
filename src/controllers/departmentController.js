@@ -8,7 +8,9 @@ const departmentController = {
 
       const departmentCheck = await Department.findOne({ code });
       if (departmentCheck)
-        return res.status(404).json("Department already exists");
+        return res
+          .status(404)
+          .json({ success: false, message: "Department already exists" });
       const department = new Department({
         code,
         name,
@@ -19,7 +21,7 @@ const departmentController = {
       await department.save();
       res
         .status(200)
-        .json({ status: true, msg: "create department successfully" });
+        .json({ success: true, message: "create department successfully" });
     } catch (err) {
       next(err);
     }
@@ -31,7 +33,7 @@ const departmentController = {
 
       const departmentDetail = await Department.findById(id);
 
-      res.status(200).json(departmentDetail);
+      res.status(200).json({ success: true, data: [departmentDetail] });
     } catch (err) {
       next(err);
     }
@@ -67,7 +69,7 @@ const departmentController = {
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json(departmentList);
+      return res.status(200).json({ success: true, data: [departmentList] });
     } catch (err) {
       next(err);
     }
@@ -98,7 +100,7 @@ const departmentController = {
 
       res
         .status(200)
-        .json({ status: true, msg: "Delete Department Successfully" });
+        .json({ success: true, message: "Delete Department Successfully" });
     } catch (err) {
       next(err);
     }
@@ -119,7 +121,9 @@ const departmentController = {
         }
       );
 
-      res.status(200).json({ status: true, msg: "Success" });
+      res
+        .status(200)
+        .json({ status: true, msg: "update department successfully" });
     } catch (err) {
       next(err);
     }
@@ -132,7 +136,9 @@ const departmentController = {
         .populate("employeesId")
         .then((department) => {
           if (!department) {
-            res.status(404).json("Department not found");
+            res
+              .status(404)
+              .json({ success: false, message: "Department not found" });
           }
 
           // delete employeeId cuar department
@@ -165,7 +171,9 @@ const departmentController = {
           );
         });
 
-      res.status(200).json("SUCCESS");
+      res
+        .status(200)
+        .json({ status: true, message: "delete Employee successfully" });
     } catch (err) {
       next(err);
     }
@@ -181,7 +189,10 @@ const departmentController = {
       const checkPosition = department.positions.find(
         (pos) => pos.name === name
       );
-      if (checkPosition) return res.status(404).json("Position already exists");
+      if (checkPosition)
+        return res
+          .status(404)
+          .json({ success: false, message: "Position already exists" });
 
       const newPosition = {
         name,
@@ -192,7 +203,9 @@ const departmentController = {
 
       await department.save();
 
-      res.status(200).json({ status: true, msg: "Add position successfully" });
+      res
+        .status(200)
+        .json({ success: true, message: "Add position successfully" });
     } catch (err) {
       next(err);
     }
