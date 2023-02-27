@@ -5,7 +5,7 @@ const departmentController = {
   createDepartment: async (req, res, next) => {
     try {
       const { code, name } = req.body;
-
+      console.log("req.body",req.body);
       const departmentCheck = await Department.findOne({ code });
       if (departmentCheck)
         return res
