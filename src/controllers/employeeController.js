@@ -7,6 +7,7 @@ const employeeController = {
     const queryDepartment = req.query.department;
     const queryBenefit = req.query.benefit;
     const queryPosition = req.query.position;
+    const queryBoar = req.query.boar;
 
     try {
       const picturePath = req?.files?.length > 0 ? req.files[0].name : null;
@@ -49,6 +50,7 @@ const employeeController = {
         employee.picturePath = picturePath;
         employee.status = status;
         employee.salaryRank = salaryRank;
+        employee.is_onBoar = queryBoar;
       }
 
       const oldDepartment = await Department.findById(employee.departMentId);
