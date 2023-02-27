@@ -6,6 +6,13 @@ const userController = {
     try {
       const { email, username, password, status, role } = req.body;
 
+      const checkEmail = await User.findOne({ email });
+
+      if (checkEmail)
+        return res
+          .status(404)
+          .json({ success: false, message: "Email already exists" });
+
       // hash password
       const salt = await bcrypt.genSalt();
       const passwordHash = await bcrypt.hash(password, salt);
@@ -14,7 +21,7 @@ const userController = {
         email,
         username,
         password: passwordHash,
-        role,
+        role: role || "HR",
         status,
       });
 
