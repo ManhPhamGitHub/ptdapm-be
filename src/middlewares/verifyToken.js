@@ -32,7 +32,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyTokenAndHR = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.role.includes("Admin") && req.user.role.includes("HR")) {
+    if (req.user.role.includes("Admin") || req.user.role.includes("HR")) {
       next();
     } else {
       res.status(403).json("You're not allowed to do that!");
