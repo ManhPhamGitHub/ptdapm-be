@@ -22,6 +22,8 @@ const employeeSchema = new mongoose.Schema(
     },
     BirthOfDate: {
       type: Date,
+
+      default: new Date(),
     },
     gender: {
       type: String,
@@ -58,6 +60,11 @@ const employeeSchema = new mongoose.Schema(
     ],
     salaryRank: {
       type: Number,
+      default: 1,
+    },
+    is_onBoar: {
+      type: Boolean,
+      default: true,
     },
     status: {
       type: String,
