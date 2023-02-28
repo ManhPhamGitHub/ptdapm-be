@@ -21,7 +21,7 @@ const benefitController = {
         holiday: [],
       });
 
-      res.status(200).json({ success: true, message: "success" });
+      res.status(200).json({ success: true, message: "Success" });
     } catch (err) {
       next(err);
     }
@@ -54,7 +54,7 @@ const benefitController = {
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json({ success: true, data: [benefitList] });
+      return res.status(200).json({ success: true, data: benefitList });
     } catch (err) {
       next(err);
     }
@@ -66,7 +66,7 @@ const benefitController = {
 
       const benefit = await Benefit.findById(id);
 
-      res.status(200).json({ success: true, data: [benefit] });
+      res.status(200).json({ success: true, data: benefit });
     } catch (err) {
       next(err);
     }
@@ -141,7 +141,6 @@ const benefitController = {
 
   deleteBenefit: async (req, res, next) => {
     try {
-      console.log("vo");
       const { id } = req.params;
 
       await Benefit.findByIdAndUpdate(id, {

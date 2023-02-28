@@ -33,7 +33,7 @@ const departmentController = {
 
       const departmentDetail = await Department.findById(id);
 
-      res.status(200).json({ success: true, data: [departmentDetail] });
+      res.status(200).json({ success: true, data: departmentDetail });
     } catch (err) {
       next(err);
     }
@@ -69,7 +69,7 @@ const departmentController = {
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json({ success: true, data: [departmentList] });
+      return res.status(200).json({ success: true, data: departmentList });
     } catch (err) {
       next(err);
     }
@@ -77,7 +77,6 @@ const departmentController = {
 
   deleteDepartment: async (req, res, next) => {
     try {
-      console.log("vo");
       const { id } = req.params;
 
       const deleteDepartment = {
@@ -173,7 +172,7 @@ const departmentController = {
 
       res
         .status(200)
-        .json({ status: true, message: "delete Employee successfully" });
+        .json({ status: true, message: "Delete employee successfully" });
     } catch (err) {
       next(err);
     }
