@@ -1,6 +1,5 @@
 const router = require("express").Router();
-const controllers = require('../../controllers/excelController') 
- console.log("da vao route");
-router.post("/", controllers.excel)
+const controllers = require('../../controllers/excelController')
+router.post("/", controllers.importExcel)
 
 module.exports = router

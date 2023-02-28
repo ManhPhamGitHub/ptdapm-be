@@ -1,6 +1,6 @@
 var XLSX = require('xlsx')
-var excelModal = require('../models/excelModel')
-const excel = async (req, res) => {
+const employeeModel = require('../models/employeeModel')
+const importExcel = async (req, res) => {
     try {
         let file = req.files
         let arrFile = []
@@ -8,7 +8,8 @@ const excel = async (req, res) => {
             arrFile.push(file[i])
             let wb = XLSX.readFile(arrFile[i].path)
             let ws = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-            excelModal.insertMany(ws, (err, data) => {  
+            let check = ws.filter((item)=>item.codeEmployee && item.name && item.email && item.address && item.gender && item.phoneNumber)
+            employeeModel.insertMany(check, (err, data) => { 
                 res.send(data)
             })
         }
@@ -16,4 +17,4 @@ const excel = async (req, res) => {
         res.send(error)
     }
 }
-module.exports = { excel }
+module.exports = { importExcel }
