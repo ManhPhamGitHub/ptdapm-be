@@ -5,7 +5,6 @@ const departmentController = {
   createDepartment: async (req, res, next) => {
     try {
       const { code, name } = req.body;
-      console.log("req.body",req.body);
       const departmentCheck = await Department.findOne({ code });
       if (departmentCheck)
         return res
@@ -14,14 +13,13 @@ const departmentController = {
       const department = new Department({
         code,
         name,
-        departmentChair: null,
         employeesId: [],
         positions: [],
       });
       await department.save();
       res
         .status(200)
-        .json({ success: true, message: "create department successfully" });
+        .json({ success: true, data: department });
     } catch (err) {
       next(err);
     }
@@ -108,8 +106,6 @@ const departmentController = {
   updateDepartment: async (req, res, next) => {
     try {
       const { id } = req.params;
-      console.log(id);
-      console.log(req.body);
       await Department.findByIdAndUpdate(
         id,
         {

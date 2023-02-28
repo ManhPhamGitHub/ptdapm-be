@@ -24,10 +24,6 @@ const departmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    departmentChair: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Employee",
-    },
     employeesId: [
       {
         type: mongoose.Schema.Types.ObjectId,
