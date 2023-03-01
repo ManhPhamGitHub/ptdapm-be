@@ -65,10 +65,12 @@ const userController = {
       const totalPage = Math.ceil(totalRecord / limit); // tổng page
 
       userList.totalUser = totalRecord;
+      s;
       userList.totalPage = totalPage;
       userList.activePage = activePage;
 
-      userList.userList = await User.find(query, "-password") // find ra theo query
+      userList.userList = await User.find(query, "-password")
+        .sort({ createdAt: -1 }) // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();

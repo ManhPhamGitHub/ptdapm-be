@@ -41,7 +41,7 @@ const departmentController = {
 
   getAllDepartment: async (req, res, next) => {
     const activePage = +req.query.page || 1;
-    const limit = +req.query.limit || 5;
+    const limit = +req.query.limit || 2;
 
     const queryName = req.query.name;
 
@@ -64,7 +64,8 @@ const departmentController = {
       departmentList.totalPage = totalPage;
       departmentList.activePage = activePage;
 
-      departmentList.departmentList = await Department.find(query) // find ra theo query
+      departmentList.departmentList = await Department.find(query)
+        .sort({ createdAt: -1 }) // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();
