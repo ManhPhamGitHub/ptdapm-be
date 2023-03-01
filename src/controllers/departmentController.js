@@ -119,7 +119,7 @@ const departmentController = {
 
       res
         .status(200)
-        .json({ status: true, msg: "update department successfully" });
+        .json({ success: true, message: "update department successfully" });
     } catch (err) {
       next(err);
     }
