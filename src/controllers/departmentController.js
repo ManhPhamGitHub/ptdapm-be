@@ -41,7 +41,7 @@ const departmentController = {
 
   getAllDepartment: async (req, res, next) => {
     const activePage = +req.query.page || 1;
-    const limit = +req.query.limit || 2;
+    const limit = +req.query.limit || 5;
 
     const queryName = req.query.name;
 
