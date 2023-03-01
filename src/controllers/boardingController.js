@@ -4,10 +4,10 @@ exports.addUpdateBoarding = async (req, res) => {
     try {
         const { boardingId, startDate, endDate, status } = req.body;
         if (boardingId == "" || !boardingId) {
-            await boardingModel.create({ startDate: startDate, endDate: endDate, status: status })
+            await boardingModel.create({ startDate: startDate, endDate: endDate })
             res.send(res.status(200).json({ success: true, message: "create boarding success" }))
         }
-        await boardingModel.findByIdAndUpdate(boardingId, { startDate: startDate, endDate: endDate, status: status })
+        await boardingModel.findByIdAndUpdate(boardingId, { startDate: startDate, endDate: endDate })
         res.send(res.status(200).json({ success: true, message: "update boarding success" }))
     } catch (error) {
         next(error);
@@ -42,7 +42,7 @@ exports.getBoarding = async (req, res) => {
 
 exports.delBoarding = async (req, res) => {
     try {
-        await boardingModel.findByIdAndDelete(req.params.boardingId)
+        await boardingModel.findByIdAndUpdate(req.params.boardingId,{status: false})
         res.status(200).json({ success: true, message: "delete boarding successfully" });
     } catch (error) {
         next(error);

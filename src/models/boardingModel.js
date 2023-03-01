@@ -13,7 +13,8 @@ const boarding = new mongoose.Schema(
       type: Date
     },
     status:{
-      type: Boolean
+      type: Boolean,
+      default: true
     }
   }
 );
