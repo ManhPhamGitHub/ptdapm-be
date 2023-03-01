@@ -19,10 +19,11 @@ exports.addUpdateBoarding = async (req, res) => {
 
 exports.getBoarding = async (req, res) => {
     try {
-        if (req.params.boardingId) {
-            const boardingList = await boardingModel.findById(req.params.boardingId)
-            return res.status(200).json({ success: true, data: [boardingList] });
-        }
+        // const startDate = req.query.startDate
+        // if (startDate) {
+        //     const boardingList = await boardingModel.find({startDate: { $regex: startDate, $options: "i" }});
+        //     return res.status(200).json({ success: true, data: [boardingList] });
+        // }
         const limit = 5
         let activePage = parseInt(req.query.activePage)
         const totalData = await boardingModel.countDocuments();
