@@ -1,7 +1,9 @@
+const controllers = require('../../controllers/boardingController') 
 const router = require("express").Router();
 
-router.get("/", (req, res) => {
-  res.json("boarding");
-});
+router.post("/", controllers.addUpdateBoarding)
+router.get("/", controllers.getBoarding)
+router.get("/:boardingId", controllers.getBoarding)
+router.delete("/:boardingId", controllers.delBoarding)
 
 module.exports = router;
