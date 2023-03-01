@@ -65,7 +65,7 @@ const userController = {
       const totalPage = Math.ceil(totalRecord / limit); // tổng page
 
       userList.totalUser = totalRecord;
-      s;
+
       userList.totalPage = totalPage;
       userList.activePage = activePage;
 
