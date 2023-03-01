@@ -62,7 +62,8 @@ const departmentController = {
       departmentList.totalPage = totalPage;
       departmentList.activePage = activePage;
 
-      departmentList.departmentList = await Department.find(query) // find ra theo query
+      departmentList.departmentList = await Department.find(query)
+        .sort({ createdAt: -1 }) // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();
