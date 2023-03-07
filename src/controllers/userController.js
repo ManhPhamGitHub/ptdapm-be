@@ -129,7 +129,7 @@ const userController = {
           .status(200)
           .json({ status: true, msg: "Change password successfully" });
       } else {
-        await User.findByIdAndUpdate(
+        const usersUpdated = await User.findByIdAndUpdate(
           id,
           {
             $set: req.body,
@@ -139,7 +139,7 @@ const userController = {
           }
         );
 
-        res.status(200).json({ status: true, message: "Update successfully" });
+        res.status(200).json({ success: true, message: "Update successfully", data: usersUpdated });
       }
     } catch (err) {
       next(err);
