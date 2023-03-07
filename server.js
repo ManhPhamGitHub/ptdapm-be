@@ -18,9 +18,9 @@ const upload = multer();
 // Middlewares
 app.use(cors());
 app.use(helmet());
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
-app.use(upload.array()); 
+app.use(bodyParser.json());
+app.use(upload.any()) 
 app.use(express.static('public'));
 
 const routes = require("./src/routes/index");
