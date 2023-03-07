@@ -97,7 +97,6 @@ const userController = {
     try {
       const { id } = req.params;
       const queryChangePassword = req.query.changePassword;
-
       if (queryChangePassword) {
         const { oldPassword, newPassword } = req.body;
 
@@ -133,6 +132,7 @@ const userController = {
           id,
           {
             $set: req.body,
+            user_avatar:file.path
           },
           {
             new: true,
