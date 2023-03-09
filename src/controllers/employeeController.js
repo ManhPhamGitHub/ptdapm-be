@@ -200,11 +200,7 @@ const employeeController = {
     try {
       const { id } = req.params;
 
-      console.log(id);
-
       const employeeDetail = await Employee.findById(id);
-
-      console.log(employeeDetail);
 
       res
         .status(200)

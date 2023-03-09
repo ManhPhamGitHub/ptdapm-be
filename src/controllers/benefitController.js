@@ -17,11 +17,9 @@ const benefitController = {
         standardLeave,
         month,
         status,
-        beneficiariesId: [],
-        holiday: [],
       });
 
-      res.status(200).json({ success: true, message: "success" });
+      res.status(200).json({ success: true, message: "Success" });
     } catch (err) {
       next(err);
     }
@@ -49,12 +47,13 @@ const benefitController = {
       benefitList.totalPage = totalPage;
       benefitList.activePage = activePage;
 
-      benefitList.benefitList = await Benefit.find(query) // find ra theo query
+      benefitList.benefitList = await Benefit.find(query)
+        .sort({ createdAt: -1 }) // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json({ success: true, data: [benefitList] });
+      return res.status(200).json({ success: true, data: benefitList });
     } catch (err) {
       next(err);
     }
@@ -66,7 +65,7 @@ const benefitController = {
 
       const benefit = await Benefit.findById(id);
 
-      res.status(200).json({ success: true, data: [benefit] });
+      res.status(200).json({ success: true, data: benefit });
     } catch (err) {
       next(err);
     }
@@ -78,7 +77,6 @@ const benefitController = {
       const queryDelete = req.query.delete;
       const benefit = await Benefit.findById(id);
       const { name, startDate, endDate, description } = req.body;
-      console.log(req.body);
       const newHoliday = {
         name,
         startDate,
@@ -141,7 +139,6 @@ const benefitController = {
 
   deleteBenefit: async (req, res, next) => {
     try {
-      console.log("vo");
       const { id } = req.params;
 
       await Benefit.findByIdAndUpdate(id, {

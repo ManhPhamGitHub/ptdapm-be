@@ -27,7 +27,7 @@ const userController = {
 
       //Save user to DB
       await newUser.save();
-      return res.status(200).json({ status: true, msg: "Register Success" });
+      return res.status(200).json({ status: true, message: "Register Success" });
     } catch (err) {
       next(err);
     }
@@ -65,15 +65,17 @@ const userController = {
       const totalPage = Math.ceil(totalRecord / limit); // tổng page
 
       userList.totalUser = totalRecord;
+
       userList.totalPage = totalPage;
       userList.activePage = activePage;
 
-      userList.userList = await User.find(query, "-password") // find ra theo query
+      userList.userList = await User.find(query, "-password")
+        .sort({ createdAt: -1 }) // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json({ success: true, data: [userList] });
+      return res.status(200).json({ success: true, data: userList });
     } catch (err) {
       next(err);
     }
@@ -85,7 +87,7 @@ const userController = {
 
       const user = await User.findById(id);
 
-      res.status(200).json({ success: true, data: [user] });
+      res.status(200).json({ success: true, data: user });
     } catch (err) {
       next(err);
     }
@@ -107,7 +109,6 @@ const userController = {
     try {
       const { id } = req.params;
       const queryChangePassword = req.query.changePassword;
-
       if (queryChangePassword) {
         const { oldPassword, newPassword } = req.body;
 
@@ -139,18 +140,18 @@ const userController = {
           .status(200)
           .json({ status: true, msg: "Change password successfully" });
       } else {
-        console.log(req.body);
-        await User.findByIdAndUpdate(
+        const usersUpdated = await User.findByIdAndUpdate(
           id,
           {
             $set: req.body,
+            user_avatar:file.path
           },
           {
             new: true,
           }
         );
 
-        res.status(200).json({ status: true, msg: "Update successfully" });
+        res.status(200).json({ success: true, message: "Update successfully", data: usersUpdated });
       }
     } catch (err) {
       next(err);
@@ -163,11 +164,10 @@ const userController = {
 
       const checkUser = await User.findById(id);
 
-      console.log(checkUser);
       if (checkUser.role.includes("Admin")) {
         res.status(404).json({
           success: false,
-          msg: "This user is admin so it doesn't delete it",
+          message: "This user is admin so it doesn't delete it",
         });
       } else {
         await User.findByIdAndDelete(id);
