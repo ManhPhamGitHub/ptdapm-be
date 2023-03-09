@@ -92,8 +92,20 @@ const userController = {
       next(err);
     }
   },
-
   updateUser: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      console.log("body",body);
+      await User.findByIdAndUpdate(id,body);
+
+      return res.status(200).json({ status: true, msg: "Update User Success" });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  changePassword: async (req, res, next) => {
     try {
       const { id } = req.params;
       const queryChangePassword = req.query.changePassword;
