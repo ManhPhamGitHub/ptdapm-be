@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: echo "tst" + ${{ secrets.DEPLOY_HOST }}
+      - run: echo "tst" + ${{ secrets.DEPLOY_HOST }} + ${{ secrets.DEPLOY_USER }} +  ${{ secrets.DEPLOY_TARGET }}
       - name: ssh deploy
         uses: easingthemes/ssh-deploy@v2.1.4
         env:
