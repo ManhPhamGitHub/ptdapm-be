@@ -5,7 +5,6 @@ const departmentController = {
   createDepartment: async (req, res, next) => {
     try {
       const { code, name } = req.body;
-      console.log("req.body",req.body);
       const departmentCheck = await Department.findOne({ code });
       if (departmentCheck)
         return res
@@ -14,14 +13,13 @@ const departmentController = {
       const department = new Department({
         code,
         name,
-        departmentChair: null,
         employeesId: [],
         positions: [],
       });
       await department.save();
       res
         .status(200)
-        .json({ success: true, message: "create department successfully" });
+        .json({ success: true, data: department });
     } catch (err) {
       next(err);
     }
@@ -33,7 +31,7 @@ const departmentController = {
 
       const departmentDetail = await Department.findById(id);
 
-      res.status(200).json({ success: true, data: [departmentDetail] });
+      res.status(200).json({ success: true, data: departmentDetail });
     } catch (err) {
       next(err);
     }
@@ -64,12 +62,13 @@ const departmentController = {
       departmentList.totalPage = totalPage;
       departmentList.activePage = activePage;
 
-      departmentList.departmentList = await Department.find(query) // find ra theo query
+      departmentList.departmentList = await Department.find(query)
+        .sort({ createdAt: -1 }) // find ra theo query
         .limit(limit)
         .skip(startIndex)
         .exec();
 
-      return res.status(200).json({ success: true, data: [departmentList] });
+      return res.status(200).json({ success: true, data: departmentList });
     } catch (err) {
       next(err);
     }
@@ -77,7 +76,6 @@ const departmentController = {
 
   deleteDepartment: async (req, res, next) => {
     try {
-      console.log("vo");
       const { id } = req.params;
 
       const deleteDepartment = {
@@ -109,8 +107,6 @@ const departmentController = {
   updateDepartment: async (req, res, next) => {
     try {
       const { id } = req.params;
-      console.log(id);
-      console.log(req.body);
       await Department.findByIdAndUpdate(
         id,
         {
@@ -123,7 +119,7 @@ const departmentController = {
 
       res
         .status(200)
-        .json({ status: true, msg: "update department successfully" });
+        .json({ success: true, message: "update department successfully" });
     } catch (err) {
       next(err);
     }
@@ -173,7 +169,7 @@ const departmentController = {
 
       res
         .status(200)
-        .json({ status: true, message: "delete Employee successfully" });
+        .json({ status: true, message: "Delete employee successfully" });
     } catch (err) {
       next(err);
     }

@@ -1,22 +1,20 @@
-name: Push-to-EC2
+name: SSH Deploy
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
   deploy:
-    name: Deploy to EC2
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3.3.0
-    - name: Deploy to Server 1
-      uses: easingthemes/ssh-deploy@main
-      env:
-        SSH_PRIVATE_KEY: ${ { secrets.EC2_SSH_KEY }}
-        REMOTE_HOST: ${ { secrets.HOST_DNS }}
-        REMOTE_USER: ${ { secrets.USERNAME }}
-        TARGET: ${ { secrets.TARGET_DIR }}
 
+    steps:
+      - uses: actions/checkout@v2
+      - name: ssh deploy
+        uses: easingthemes/ssh-deploy@v2.1.4
+        env:
+          SSH_PRIVATE_KEY: ${{ vars.DEPLOY_KEY }}
+          REMOTE_HOST: ${{ vars.DEPLOY_HOST }}
+          REMOTE_USER: ${{ vars.DEPLOY_USER }}
+          REMOTE_PORT: 22
+          TARGET: ${{ vars.DEPLOY_TARGET }}

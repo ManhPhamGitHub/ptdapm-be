@@ -38,4 +38,6 @@ router.post(
   departmentController.addPosition
 );
 
+router.get("/test", (res,req)=>{return res.send("hellooooo")});
+
 module.exports = router;
