@@ -68,7 +68,8 @@ const employeeSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "Active",
+      enum : ['active','inActive',"onBoarding","offBoarding"],
+      default: 'active'
     },
     is_deleted: {
       type: Boolean,
