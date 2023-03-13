@@ -9,7 +9,3 @@ exports.updateBoarding = async (req, res) => {
         next(error);
     }
 }
-
-
-
-

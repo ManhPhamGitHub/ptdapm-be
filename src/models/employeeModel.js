@@ -75,6 +75,10 @@ const employeeSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startDate:{
+      type:Date,
+      default: Date.now
+    }
   },
   {
     timestamps: true,

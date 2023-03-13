@@ -21,6 +21,7 @@ const employeeController = {
         phoneNumber,
         status,
         salaryRank,
+        startDate
       } = req.body;
 
       let department = null;
@@ -39,6 +40,7 @@ const employeeController = {
           picturePath,
           salaryRank,
           status,
+          startDate
         });
       } else {
         employee.name = name;
