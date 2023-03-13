@@ -96,10 +96,12 @@ const userController = {
     try {
       const { id } = req.params;
       const body = req.body;
-      console.log("body",body);
-      await User.findByIdAndUpdate(id,body);
 
-      return res.status(200).json({ status: true, msg: "Update User Success" });
+      const userUpdated = await User.findByIdAndUpdate(id,body, {
+        new: true,
+      });
+
+      return res.status(200).json({ success: true, message: "Update User Success", data: userUpdated });
     } catch (err) {
       next(err);
     }
@@ -108,51 +110,35 @@ const userController = {
   changePassword: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const queryChangePassword = req.query.changePassword;
-      if (queryChangePassword) {
-        const { oldPassword, newPassword } = req.body;
+      const { oldPassword, newPassword } = req.body;
 
-        const user = await User.findById(id);
-        // kiểm tra user
-        if (!user) {
-          return res
-            .status(404)
-            .json({ success: false, message: "Incorrect User" });
-        }
-
-        // check password
-        const isMatch = await bcrypt.compare(oldPassword, user.password);
-
-        if (!isMatch) {
-          return res
-            .status(404)
-            .json({ success: false, message: "Incorrect Password" });
-        }
-
-        // mã hóa password mới
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-        // lưu vào db
-        user.password = hashedPassword;
-        await user.save();
-
-        res
-          .status(200)
-          .json({ status: true, msg: "Change password successfully" });
-      } else {
-        const usersUpdated = await User.findByIdAndUpdate(
-          id,
-          {
-            $set: req.body,
-            user_avatar:file.path
-          },
-          {
-            new: true,
-          }
-        );
-
-        res.status(200).json({ success: true, message: "Update successfully", data: usersUpdated });
+      const user = await User.findById(id);
+      // kiểm tra user
+      if (!user) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Incorrect User" });
       }
+
+      // check password
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+      if (!isMatch) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Incorrect Password" });
+      }
+
+      // mã hóa password mới
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // lưu vào db
+      user.password = hashedPassword;
+      await user.save();
+
+      res
+        .status(200)
+        .json({ status: true, msg: "Change password successfully" });
     } catch (err) {
       next(err);
     }
