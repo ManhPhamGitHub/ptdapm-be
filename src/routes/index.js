@@ -9,8 +9,7 @@ const contractRoute = require("./v1/contract.js");
 const userRoute = require("./v1/user.js");
 const servicesRoute = require("./v1/services");
 const sendMailRoute = require('./v1/sendMail')
-const reportRoute = require('./v1/report')
-
+const reportRoute = require("./v1/report")
 // Every api after that must be prefixed with /api/v1
 
 //auth
@@ -34,8 +33,10 @@ routes.use("/api/v1/boardings", boardingRoute);
 //contract
 routes.use("/api/v1/contracts", contractRoute);
 
+//sendMail
 routes.use("/api/v1/sendmail", sendMailRoute);
 
+//services
 routes.use("/api/v1/services", servicesRoute);
 
 routes.use("/api/v1/report", reportRoute);
