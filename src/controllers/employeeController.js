@@ -23,7 +23,7 @@ const employeeController = {
         salaryRank,
         startDate
       } = req.body;
-
+      console.log("startDate",typeof startDate,startDate ,new Date(startDate));
       let department = null;
       let benefit = null;
 
@@ -40,7 +40,7 @@ const employeeController = {
           picturePath,
           salaryRank,
           status,
-          startDate
+          // startDate : ISODate(startDate)
         });
       } else {
         employee.name = name;
@@ -53,6 +53,7 @@ const employeeController = {
         employee.status = status;
         employee.salaryRank = salaryRank;
         employee.is_onBoar = queryBoar;
+        employee.startDate =  ISODate(startDate);
       }
 
       const oldDepartment = await Department.findById(employee.departMentId);
