@@ -1,7 +1,6 @@
 const router = require("express").Router();
+const contractController = require("../../controllers/contractController")
 
-router.get("/", (req, res) => {
-  res.json("contract test 123321");
-});
+router.post("/", contractController.updatePdf);
 
 module.exports = router;

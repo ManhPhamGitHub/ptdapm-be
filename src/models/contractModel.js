@@ -2,47 +2,26 @@ const mongoose = require("mongoose");
 
 const contractSchema = new mongoose.Schema(
   {
-    client: {
+    contractId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Employee",
+      ref: "Contract",
     },
-    serviceProvider: {
+    employeeId:{
       type: String,
-      require: true,
+      unique: true,
     },
-    startDate: {
-      type: Date,
-      require: true,
-    },
-    endData: {
-      type: Date,
-      require: true,
-    },
-    signedByClient: {
-      type: Boolean,
-      default: false,
-    },
-    signedByServiceProvider: {
-      type: Boolean,
-      default: false,
-    },
-    picture: {
+    username: {
       type: String,
     },
-    departmentId: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Department",
-      },
-    ],
-    status: {
+    email: {
       type: String,
-      default: "unactive",
+      unique: true,
     },
+    pdf_contract: {
+      type: String,
+      default: ''
+    }
   },
-  {
-    timestamps: true,
-  }
 );
 
 module.exports = mongoose.model("Contract", contractSchema);
