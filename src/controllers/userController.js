@@ -95,13 +95,17 @@ const userController = {
   updateUser: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const body = req.body;
+      const { file } = req
+      let buildBodyToUpdate = {
+        ...req.body
+      }
+      if(file && file.path) buildBodyToUpdate = {...buildBodyToUpdate, user_avatar: file.path} 
 
-      const userUpdated = await User.findByIdAndUpdate(id,body, {
+      const userUpdated = await User.findByIdAndUpdate(id, buildBodyToUpdate, {
         new: true,
       });
 
-      return res.status(200).json({ success: true, message: "Update User Success", data: userUpdated });
+      return res.status(200).json({ success: true, message: "Update user success", data: userUpdated });
     } catch (err) {
       next(err);
     }

@@ -1,4 +1,5 @@
 const employeeModel = require("../models/employeeModel");
+const userModel = require("../models/userModel")
 
 exports.reportEmployee = async (req, res) => {
     try {
