@@ -13,15 +13,13 @@ exports.reportEmployee = async (req, res) => {
         })
         employees.filter((employee)=>{
             const monthOfEmployee = +employee.startDate.toISOString().split('-')[1]
-            console.log("employees",employee.createdAt ,monthOfEmployee,totalEmployee[monthOfEmployee]);
             totalEmployee[monthOfEmployee-1] +=1
         })
-        console.log("totalEmployee",totalEmployee);
         const data ={
             label_month,
             totalEmployee
         }
-        res.status(200).json({ success: true, message: "update boarding success" ,data})
+        res.status(200).json({ success: true, message: "get report success" ,data})
     } catch (error) {
         console.log(error);
     }
