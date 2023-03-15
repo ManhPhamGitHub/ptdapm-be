@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const ORIGINAL_MAIL = 'minhcutebn01@gmail.com';
-const ORIGINAL_MAIL_PASS = 'jygsyylxsjgvuefc'
+const ORIGINAL_MAIL_PASS = 'vfbihtfknzfwsdyd'
 
 exports.sendmail = async (req, res) => {
   try {
