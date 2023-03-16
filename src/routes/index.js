@@ -10,6 +10,7 @@ const userRoute = require("./v1/user.js");
 const servicesRoute = require("./v1/services");
 const sendMailRoute = require('./v1/sendMail')
 const reportRoute = require("./v1/report")
+const excelRoute = require("./v1/excel");
 // Every api after that must be prefixed with /api/v1
 
 //auth
@@ -39,6 +40,10 @@ routes.use("/api/v1/sendmail", sendMailRoute);
 //services
 routes.use("/api/v1/services", servicesRoute);
 
+// report
 routes.use("/api/v1/report", reportRoute);
+
+// import excel
+routes.use("/api/v1/import_excel", excelRoute) 
 
 module.exports = routes;
