@@ -21,9 +21,7 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(bodyParser.json());
 app.use(upload.any()) 
-// app.use(express.static('public'));
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public'));
 
 const routes = require("./src/routes/index");
 app.use(routes);
