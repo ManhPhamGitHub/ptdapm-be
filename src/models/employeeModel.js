@@ -28,6 +28,7 @@ const employeeSchema = new mongoose.Schema(
     gender: {
       type: String,
       required: true,
+      default: "male",
     },
     picturePath: {
       type: String,
@@ -44,7 +45,7 @@ const employeeSchema = new mongoose.Schema(
     ],
     position: {
       type: String,
-      default: "",
+      default: "lecturers",
     },
     benefitId: [
       {
@@ -68,7 +69,7 @@ const employeeSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum : ['active','inActive',"onBoarding","offBoarding"],
+      enum : ['active','inActive', "onBoarding", "offBoarding"],
       default: 'active'
     },
     is_deleted: {
@@ -76,7 +77,7 @@ const employeeSchema = new mongoose.Schema(
       default: false,
     },
     startDate:{
-      type:Date,
+      type: Date,
       default: Date.now
     }
   },

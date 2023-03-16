@@ -4,11 +4,10 @@ const {
   verifyToken,
   verifyTokenAndAdmin,
 } = require("../../middlewares/verifyToken");
-const fileUpload = require("../../middlewares/fileUpload")
 router.post("/register", userController.registerUser);
 router.get("/", userController.getUserPagination);
 router.get("/find/:id", userController.getUser);
-router.put("/:id", verifyToken, userController.updateUser);
+router.put("/:id", userController.updateUser);
 router.put("/change-password/:id", verifyToken, userController.changePassword);
 router.delete("/:id", verifyTokenAndAdmin, userController.deleteUser);
 

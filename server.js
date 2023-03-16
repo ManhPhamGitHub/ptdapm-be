@@ -20,8 +20,8 @@ app.use(cors());
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(bodyParser.json());
-app.use(upload.any()) 
-app.use(express.static('public'));
+app.use(upload.single()) 
+// app.use(express.static('public'));
 
 const routes = require("./src/routes/index");
 app.use(routes);
