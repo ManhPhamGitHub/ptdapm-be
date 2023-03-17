@@ -2,16 +2,27 @@ const mongoose = require("mongoose");
 
 const contractSchema = new mongoose.Schema(
   {
-    contractId: {
+    contract_name: {
+      type: String,
+    },
+    role: {
+      type: String,
+    },
+    employeeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Contract",
+      ref: "Employee",
     },
-    employeeId:{
-      type: String,
-      unique: true,
+    contract_date: { // Ngày ký hợp đồng.
+      type: Date
     },
-    username: {
-      type: String,
+    start_date: { // Ngày bắt đầu hiệu lực của hợp đồng.
+      type: Date
+    },
+    end_date: { // Ngày kết thúc hiệu lực của hợp đồng.
+      type: Date
+    },
+    status: {
+      enum: ["pending", "cancelled", "complete"]
     },
     email: {
       type: String,
