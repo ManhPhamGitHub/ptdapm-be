@@ -163,7 +163,7 @@ const employeeController = {
     const queryDelete = req.query.is_deleted;
 
     const activePage = +req.query.page || 1;
-    const limit = +req.query.limit || 5;
+    const limit = +req.query.limit || 50;
 
     const query = {};
     try {
