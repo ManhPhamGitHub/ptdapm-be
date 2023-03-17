@@ -144,7 +144,7 @@ const employeeController = {
           email: employee.email,
           employeeId: employee._id,
         });
-        employee.contractId.push(contract._id);
+        employee.contractId = contract._id;
       }
 
       console.log(employee);
