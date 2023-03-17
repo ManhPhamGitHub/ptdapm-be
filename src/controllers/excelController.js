@@ -27,7 +27,6 @@ const importExcel = async (req, res) => {
             const isValidRecord = REQUIRE_FIELDS.filter((key) => recordKeys.indexOf(key) > -1).length >= 5
             
             if(isValidRecord) {
-                
                 const buildDataToInsert = ws.map(record => {
                     return {
                         ...record,
@@ -46,7 +45,7 @@ const importExcel = async (req, res) => {
                     }
                 })
             } else {
-                res.send({ message: "test"})
+                res.send({ success: false, message: "Dữ liệu trong file không hợp lệ!!!"})
             }
         } else {
             res.send({ success: false, message: "Có lỗi xảy ra, vui lòng thử lại sau"})

@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 let diskStore = multer.diskStorage({
   destination:(_, ___, cb)=>{
-    cb(null,path.join(__dirname))
+    cb(null,path.join(__dirname, '/dummy-files'))
   },
   filename:(_, file, cb)=>{
     cb(null,file.originalname)
