@@ -137,7 +137,7 @@ const employeeController = {
         }
       }
 
-      if (employee?.contractId.length === 0) {
+      if (employee?.contractId?.length === 0) {
         const contract = await Contract.create({
           contract_name: employee.name,
           email: employee.email,
