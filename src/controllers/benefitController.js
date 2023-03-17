@@ -11,7 +11,7 @@ const benefitController = {
         return res
           .status(404)
           .json({ success: false, message: "Benefit already exists" });
-      await Benefit.create({
+      const createdBenefit = await Benefit.create({
         name,
         description,
         standardLeave,
@@ -19,7 +19,7 @@ const benefitController = {
         status,
       });
 
-      res.status(200).json({ success: true, message: "Success" });
+      res.status(200).json({ success: true, message: "Success", data: createdBenefit});
     } catch (err) {
       next(err);
     }
@@ -119,7 +119,7 @@ const benefitController = {
   updateBenefit: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const updateBenefit = await Benefit.findByIdAndUpdate(
+      const updatedBenefit = await Benefit.findByIdAndUpdate(
         id,
         {
           $set: req.body,
@@ -131,7 +131,7 @@ const benefitController = {
 
       res
         .status(200)
-        .json({ success: true, message: "update benefit successfully" });
+        .json({ success: true, message: "update benefit successfully", data: updatedBenefit });
     } catch (err) {
       next(err);
     }

@@ -1,7 +1,7 @@
 const contractModel = require("../models/contractModel");
 
 
-//dang test chwa chay dung dau
+//DANG TEST CHWA DUNG DAU
 exports.updateContract = async (req, res) => {
   try {
     // const contractCheck = await contractModel.findOne({ employeeId });
@@ -30,7 +30,3 @@ exports.updateContract = async (req, res) => {
     res.send(error)
   }
 }
-
-
-
-
