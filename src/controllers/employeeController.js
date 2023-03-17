@@ -1,6 +1,7 @@
 const Employee = require("../models/employeeModel");
 const Department = require("../models/departmentModel");
 const Benefit = require("../models/benefitModel");
+const Contract = require("../models/contractModel");
 
 const employeeController = {
   createEmployee: async (req, res, next) => {
@@ -21,9 +22,14 @@ const employeeController = {
         phoneNumber,
         status,
         salaryRank,
-        startDate
+        startDate,
       } = req.body;
-      console.log("startDate",typeof startDate,startDate ,new Date(startDate));
+      console.log(
+        "startDate",
+        typeof startDate,
+        startDate,
+        new Date(startDate)
+      );
       let department = null;
       let benefit = null;
 
@@ -53,7 +59,7 @@ const employeeController = {
         employee.status = status;
         employee.salaryRank = salaryRank;
         employee.is_onBoar = queryBoar;
-        employee.startDate =  ISODate(startDate);
+        employee.startDate = ISODate(startDate);
       }
 
       const oldDepartment = await Department.findById(employee.departMentId);
@@ -129,6 +135,15 @@ const employeeController = {
           benefit.beneficiariesId.push(employee._id);
           employee.benefitId = benefit._id;
         }
+      }
+
+      if (employee?.contractId.length === 0) {
+        const contract = await Contract.create({
+          contract_name: employee.name,
+          email: employee.email,
+          employeeId: employee._id,
+        });
+        employee.contractId.push(contract._id);
       }
 
       await employee.save();
