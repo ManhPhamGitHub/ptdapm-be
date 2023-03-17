@@ -53,12 +53,11 @@ const employeeSchema = new mongoose.Schema(
         ref: "Benefit",
       },
     ],
-    contractId: [
-      {
+    contractId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Contract",
       },
-    ],
+    
     salaryRank: {
       type: Number,
       default: 1,

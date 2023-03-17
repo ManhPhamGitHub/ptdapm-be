@@ -2,47 +2,37 @@ const mongoose = require("mongoose");
 
 const contractSchema = new mongoose.Schema(
   {
-    client: {
+    contract_name: {
+      type: String,
+    },
+    role: {
+      type: String,
+    },
+    employeeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Employee",
     },
-    serviceProvider: {
-      type: String,
-      require: true,
+    contract_date: { // Ngày ký hợp đồng.
+      type: Date
     },
-    startDate: {
-      type: Date,
-      require: true,
+    start_date: { // Ngày bắt đầu hiệu lực của hợp đồng.
+      type: Date
     },
-    endData: {
-      type: Date,
-      require: true,
+    end_date: { // Ngày kết thúc hiệu lực của hợp đồng.
+      type: Date
     },
-    signedByClient: {
-      type: Boolean,
-      default: false,
-    },
-    signedByServiceProvider: {
-      type: Boolean,
-      default: false,
-    },
-    picture: {
-      type: String,
-    },
-    departmentId: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Department",
-      },
-    ],
     status: {
-      type: String,
-      default: "unactive",
+      enum: ["pending", "cancelled", "complete"]
     },
+    email: {
+      type: String,
+      unique: true,
+    },
+    pdf_contract: {
+      type: String,
+      default: ''
+    }
   },
-  {
-    timestamps: true,
-  }
 );
 
 module.exports = mongoose.model("Contract", contractSchema);
