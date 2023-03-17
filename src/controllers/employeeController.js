@@ -59,7 +59,7 @@ const employeeController = {
         employee.status = status;
         employee.salaryRank = salaryRank;
         employee.is_onBoar = queryBoar;
-        employee.startDate = ISODate(startDate);
+        // employee.startDate = ISODate(startDate);
       }
 
       const oldDepartment = await Department.findById(employee.departMentId);
