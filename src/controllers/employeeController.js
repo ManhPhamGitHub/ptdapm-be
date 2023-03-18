@@ -138,7 +138,6 @@ const employeeController = {
       }
 
       if (employee?.contractId?.length === 0 || !employee?.contractId) {
-        console.log("VO day");
         const contract = await Contract.create({
           contract_name: employee.name,
           email: employee.email,
@@ -147,7 +146,6 @@ const employeeController = {
         employee.contractId = contract._id;
       }
 
-      console.log(employee);
 
       await employee.save();
       if (department) await department.save();
