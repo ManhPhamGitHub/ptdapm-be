@@ -5,21 +5,19 @@ const benefitController = {
   createBenefit: async (req, res, next) => {
     try {
       const { name, description, standardLeave, month, status } = req.body;
-
       const checkBenefit = await Benefit.findOne({ name });
       if (checkBenefit)
         return res
           .status(404)
           .json({ success: false, message: "Benefit already exists" });
-      await Benefit.create({
+      const createdUser = await Benefit.create({
         name,
         description,
-        standardLeave,
+        standardLeave: +standardLeave || 0,
         month,
         status,
       });
-
-      res.status(200).json({ success: true, message: "Success" });
+      res.status(200).json({ success: true, message: "Success", data: createdUser});
     } catch (err) {
       next(err);
     }
@@ -29,7 +27,7 @@ const benefitController = {
     const queryName = req.query.name;
 
     const activePage = +req.query.page || 1;
-    const limit = +req.query.limit || 5;
+    const limit = +req.query.limit || 50;
 
     const query = {};
     try {
