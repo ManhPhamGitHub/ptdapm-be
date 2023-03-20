@@ -22,8 +22,6 @@ const employeeSchema = new mongoose.Schema(
     },
     BirthOfDate: {
       type: Date,
-
-      default: new Date(),
     },
     gender: {
       type: String,
@@ -54,10 +52,10 @@ const employeeSchema = new mongoose.Schema(
       },
     ],
     contractId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Contract",
-      },
-    
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Contract",
+    },
+
     salaryRank: {
       type: Number,
       default: 1,
@@ -68,17 +66,17 @@ const employeeSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum : ['active','inActive', "onBoarding", "offBoarding"],
-      default: 'active'
+      enum: ["active", "inActive", "onBoarding", "offBoarding"],
+      default: "active",
     },
     is_deleted: {
       type: Boolean,
       default: false,
     },
-    startDate:{
+    startDate: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
     timestamps: true,
