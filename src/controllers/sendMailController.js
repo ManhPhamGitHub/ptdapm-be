@@ -5,11 +5,6 @@ const ORIGINAL_MAIL_PASS = 'vfbihtfknzfwsdyd'
 exports.sendmail = async (req, res) => {
   try {
     const { title, content, email } = req.body;
-    if(!email || !title || !content) {
-      res.status(422).send({ success: false, message: "You must enter all fields" });
-      return 
-    }
-    const userMail = email.includes('@gmail.com') ? email : `${email}@gmail.com`
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -19,9 +14,10 @@ exports.sendmail = async (req, res) => {
     })
     const mailOptions = {
       from: 'Xin chào <minhcutebn01@gmail.com>',
-      to: userMail,
+      bcc: email,
       subject: title,
-      text: content
+      text: content,
+      html: '<h1 style="font-family: Times New Roman">Xin chào </h1><p>Bạn có thông báo mới !!!</p>'
     }
     await transporter.sendMail(mailOptions, (error) => {
       if (error) {
