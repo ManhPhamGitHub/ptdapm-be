@@ -1,32 +1,62 @@
 const contractModel = require("../models/contractModel");
 
-
-//DANG TEST CHWA DUNG DAU
 exports.updateContract = async (req, res) => {
   try {
-    // const contractCheck = await contractModel.findOne({ employeeId });
-    const {contract_name, role, employeeId, contract_date, start_date, end_date, status, email, pdf_contract } = req.body;
-    // if(contractCheck){
-      //   return res
-      //   .status(404)
-      //   .json({ success: false, message: "Contract already exists" });
-      // }
-      const contract = new contractModel({
-        employeesId: employeeId,
-        contract_name:contract_name, 
-        role:role, 
-        contract_date:contract_date, 
-        start_date:start_date, 
-        end_date:end_date, 
-        status:status, 
-        email:email
-      })
-      const dataContract = await contract.save()
-    return res
+    const id = req.params.id
+    if (!req.body) {
+      await contractModel.findByIdAndUpdate({ _id: id }, { status: "cancelled" });
+      const dataContract = await contractModel.find({ status: { $in: ["pending", "completed"] } });
+      return res
         .status(200)
-        .json({ success: true, data: dataContract });
-    // res.status(200).json({ success: true, message: "create contract success" });
+        .json({ success: true, data: dataContract, message: " Delete complete" })
+    } else {
+      const { contract_name, role, contract_date, start_date, end_date, status, email } = req.body;
+      const statusContract = await contractModel.findOne({ _id: id });
+      if (status === statusContract.status && statusContract.status === "pending") {
+        const dataToUpdate = {
+          contract_name,
+          role,
+          contract_date,
+          start_date,
+          end_date,
+          status: "completed",
+          email
+        };
+        await contractModel.findByIdAndUpdate({ _id: id }, dataToUpdate);
+        const dataContract = await contractModel.find({ status: { $in: ["pending", "completed"] } });
+        return res
+          .status(200)
+          .json({ success: true, data: dataContract, message: " Update complete" })
+      } else {
+        return res
+          .status(500)
+          .json({ success: false, message: "Failed to update" })
+      }
+    }
   } catch (error) {
     res.send(error)
   }
 }
+
+
+exports.getContract = async (req, res) => {
+  try {
+    if (!req.query.contract_name && !req.query.status) {
+      var dataContract = await contractModel.find({ status: { $in: ["pending", "completed"] } });
+    } else {
+      const contract_name = req.query.contract_name;
+      const status = req.query.status;
+      var dataContract = await contractModel.find({
+        $or: [
+          { contract_name: { $regex: contract_name, $options: "i" } },
+          { status: status }
+        ]
+      })
+    }
+    return res
+      .status(200)
+      .json({ success: true, data: dataContract })
+  } catch (error) {
+    res.send(error);
+  }
+};
