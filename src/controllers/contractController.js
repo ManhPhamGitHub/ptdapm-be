@@ -3,13 +3,13 @@ const contractModel = require("../models/contractModel");
 exports.updateContract = async (req, res) => {
   try {
     const id = req.params.id
-    if (!req.body) {
+    if (req.method == "DELETE") {
       await contractModel.findByIdAndUpdate({ _id: id }, { status: "cancelled" });
       const dataContract = await contractModel.find({ status: { $in: ["pending", "completed"] } });
       return res
         .status(200)
         .json({ success: true, data: dataContract, message: " Delete complete" })
-    } else {
+    } else if (req.method == "PUT") {
       const { contract_name, role, contract_date, start_date, end_date, status, email } = req.body;
       const statusContract = await contractModel.findOne({ _id: id });
       if (status === statusContract.status && statusContract.status === "pending") {
@@ -27,10 +27,11 @@ exports.updateContract = async (req, res) => {
         return res
           .status(200)
           .json({ success: true, data: dataContract, message: " Update complete" })
-      } else {
+      }
+      else {
         return res
           .status(500)
-          .json({ success: false, message: "Failed to update" })
+          .json({ success: false, message: "Action failed" })
       }
     }
   } catch (error) {
