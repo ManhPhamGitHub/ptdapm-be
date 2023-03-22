@@ -13,7 +13,8 @@ const contractSchema = new mongoose.Schema(
       ref: "Employee",
     },
     contract_date: { // Ngày ký hợp đồng.
-      type: Date
+      type: Date,
+      default:new Date()
     },
     start_date: { // Ngày bắt đầu hiệu lực của hợp đồng.
       type: Date
