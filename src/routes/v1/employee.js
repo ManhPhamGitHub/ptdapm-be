@@ -6,7 +6,7 @@ router.post("/", employeeController.createEmployee);
 router.get("/", employeeController.getEmployeePagination);
 router.get("/find/:id", employeeController.getDetailEmployee);
 router.delete(
-  "/delete/:id",
+  "/delete/:id/:contractId",
   verifyTokenAndHR,
   employeeController.deleteEmployee
 );

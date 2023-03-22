@@ -234,7 +234,7 @@ const employeeController = {
 
   deleteEmployee: async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { id, contractId } = req.params;
 
       await Employee.findByIdAndUpdate(id, {
         $set: {
@@ -243,7 +243,7 @@ const employeeController = {
           benefitId: [],
           position: "",
         },
-      }).then(() => {
+      }).then(async () => {
         return Department.updateMany(
           {
             employeesId: id,
@@ -254,7 +254,13 @@ const employeeController = {
               "positions.$[].employeeId": id,
             },
           }
-        );
+        ).then(() => {
+          return Contract.findByIdAndUpdate(id, {
+            $set: {
+              is_deleted: true
+            }
+          })
+        })
       });
 
       res
