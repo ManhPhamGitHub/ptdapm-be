@@ -26,7 +26,7 @@ const employeeSchema = new mongoose.Schema(
     gender: {
       type: String,
       required: true,
-      default: "male",
+      default: "nam",
     },
     picturePath: {
       type: String,
@@ -43,7 +43,7 @@ const employeeSchema = new mongoose.Schema(
     ],
     position: {
       type: String,
-      default: "lecturers",
+      default: "Giảng viên",
     },
     benefitId: [
       {
