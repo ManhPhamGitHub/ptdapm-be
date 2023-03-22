@@ -2,6 +2,7 @@ const Employee = require("../models/employeeModel");
 const Department = require("../models/departmentModel");
 const Benefit = require("../models/benefitModel");
 const Contract = require("../models/contractModel");
+const { unixDateToDate } = require('../utils')
 
 const employeeController = {
   createEmployee: async (req, res, next) => {
@@ -24,30 +25,31 @@ const employeeController = {
         salaryRank,
         startDate,
       } = req.body;
-      // console.log(
-      //   "startDate",
-      //   typeof startDate,
-      //   startDate,
-      //   new Date(startDate)
-      // );
+
+      let defaultEmp = {
+        codeEmployee,
+        name,
+        email,
+        address,
+        BirthOfDate,
+        gender,
+        phoneNumber,
+        picturePath,
+        salaryRank,
+        status,
+      }
+
+      if(startDate) {
+        const startDateConverted = unixDateToDate(startDate)
+        defaultEmp = {...defaultEmp, startDate: startDateConverted}
+      }
+      
       let department = null;
       let benefit = null;
 
       let employee = await Employee.findOne({ codeEmployee });
       if (!employee) {
-        employee = new Employee({
-          codeEmployee,
-          name,
-          email,
-          address,
-          BirthOfDate,
-          gender,
-          phoneNumber,
-          picturePath,
-          salaryRank,
-          status,
-          // startDate : ISODate(startDate)
-        });
+        employee = new Employee(defaultEmp);
       } else {
         employee.name = name;
         employee.email = email;
@@ -59,7 +61,7 @@ const employeeController = {
         employee.status = status;
         employee.salaryRank = salaryRank;
         employee.is_onBoar = queryBoar;
-        // employee.startDate = ISODate(startDate);
+        employee.startDate = unixDateToDate(startDate);
       }
 
       const oldDepartment = await Department.findById(employee.departMentId);
