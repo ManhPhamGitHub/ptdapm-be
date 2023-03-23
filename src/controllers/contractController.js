@@ -16,7 +16,7 @@ exports.updateContract = async (req, res) => {
         const dataToUpdate = {
           contract_name,
           role,
-          contract_date,
+          contract_date: unixDateToDate(contract_date),
           start_date: unixDateToDate(start_date),
           end_date: unixDateToDate(end_date),
           status: "completed",
