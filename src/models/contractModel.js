@@ -31,6 +31,10 @@ const contractSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    position:{
+      type: String,
+      default:"Giảng viên"
+    },
     pdf_contract: {
       type: String,
       default: ''

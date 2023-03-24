@@ -126,8 +126,16 @@ const employeeController = {
           contract_name: employee.name,
           email: employee.email,
           employeeId: employee._id,
+          position:employee.position
         });
         employee.contractId = contract._id;
+      }else{
+        await Contract.save({
+          contract_name: employee.name,
+          email: employee.email,
+          employeeId: employee._id,
+          position:employee.position
+        })
       }
 
       await employee.save();
@@ -233,6 +241,7 @@ const employeeController = {
         ).then(() => {
           return Contract.findByIdAndUpdate(id, {
             $set: {
+              status:"cancelled",
               is_deleted: true,
             },
           });
