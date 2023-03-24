@@ -24,6 +24,7 @@ const employeeController = {
         status,
         salaryRank,
         startDate,
+        position
       } = req.body;
 
       let defaultEmp = {
@@ -37,6 +38,7 @@ const employeeController = {
         picturePath,
         salaryRank,
         status,
+        position
       }
 
       if(startDate) {
@@ -61,6 +63,7 @@ const employeeController = {
         employee.status = status;
         employee.salaryRank = salaryRank;
         employee.is_onBoar = queryBoar;
+        employee.position = position;
         employee.startDate = unixDateToDate(startDate);
       }
 
