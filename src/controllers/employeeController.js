@@ -126,15 +126,15 @@ const employeeController = {
           contract_name: employee.name,
           email: employee.email,
           employeeId: employee._id,
-          position:employee.position
+          position: employee.position
         });
         employee.contractId = contract._id;
-      }else{
+      } else {
         await Contract.save({
           contract_name: employee.name,
           email: employee.email,
           employeeId: employee._id,
-          position:employee.position
+          position: employee.position
         })
       }
 
@@ -220,31 +220,27 @@ const employeeController = {
     try {
       const { id, contractId } = req.params;
 
-      await Employee.findByIdAndUpdate(id, {
+      const employee = await Employee.findByIdAndUpdate(id, {
         $set: {
           is_deleted: true,
           departMentId: [],
           benefitId: [],
           position: "",
         },
-      }).then(async () => {
-        return Department.updateMany(
-          {
-            employeesId: id,
-          },
-          {
-            $pull: {
-              employeesId: id,
-              "positions.$[].employeeId": id,
-            },
-          }
-        ).then(() => {
-          return Contract.findByIdAndUpdate(id, {
-              status:"cancelled",
-          });
-        });
-      });
+      })
 
+      await Department.updateMany({employeesId: id},
+        {
+          $pull: {
+            employeesId: id,
+            "positions.$[].employeeId": id,
+          },
+        }
+      )
+
+      await Contract.findByIdAndUpdate(employee.contractId, {
+        status: "cancelled",
+      });
       res
         .status(200)
         .json({ success: true, message: "Delete employee Successfully" });
