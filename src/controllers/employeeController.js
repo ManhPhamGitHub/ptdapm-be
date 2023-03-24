@@ -237,8 +237,7 @@ const employeeController = {
           },
         }
       )
-
-      await Contract.findByIdAndUpdate(employee.contractId, {
+      const contract = await Contract.findByIdAndUpdate(employee.contractId, {
         status: "cancelled",
       });
       res

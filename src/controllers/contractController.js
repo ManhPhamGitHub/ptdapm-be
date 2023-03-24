@@ -43,7 +43,7 @@ exports.updateContract = async (req, res) => {
 exports.getContract = async (req, res) => {
   try {
     if (!req.query.contract_name && !req.query.status) {
-      var dataContract = await contractModel.find({ status: { $in: ["pending", "completed"] } });
+      var dataContract = await contractModel.find({ status: { $in: ["pending", "completed","cancelled"] } });
     } else {
       const contract_name = req.query.contract_name;
       const status = req.query.status;
