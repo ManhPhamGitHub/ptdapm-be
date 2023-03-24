@@ -156,10 +156,7 @@ const employeeController = {
       const startIndex = (activePage - 1) * limit;
 
       if (queryText) {
-        query["$or"] = [
-          { name: { $regex: queryText, $options: "i" } },
-          { email: { $regex: queryText, $options: "i" } },
-        ];
+        query["$or"] = [{ name: { $regex: queryText, $options: "i" } }];
       }
 
       if (queryDepartment) {
@@ -191,6 +188,8 @@ const employeeController = {
         .limit(limit)
         .skip(startIndex)
         .exec();
+
+      console.log(employeeList);
 
       res.status(200).json({ success: true, data: employeeList });
     } catch (err) {
