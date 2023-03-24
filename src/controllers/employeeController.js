@@ -141,11 +141,9 @@ const employeeController = {
   },
 
   getEmployeePagination: async (req, res, next) => {
-    const queryText = req.query.text;
+    const queryText = req.query.text || "";
     const queryDepartment = req.query.department;
     const queryPosition = req.query.position;
-    const queryDelete = req.query.is_deleted;
-
     const activePage = +req.query.page || 1;
     const limit = +req.query.limit || 50;
 
@@ -154,6 +152,8 @@ const employeeController = {
       const employeeList = {};
 
       const startIndex = (activePage - 1) * limit;
+
+      query.is_deleted = { $eq: false };
 
       if (queryText) {
         query["$or"] = [{ name: { $regex: queryText, $options: "i" } }];
@@ -168,10 +168,6 @@ const employeeController = {
 
       if (queryPosition) {
         query.position = { $regex: queryPosition, $options: "i" };
-      }
-
-      if (queryDelete) {
-        query.is_deleted = { $eq: queryDelete };
       }
 
       const totalRecord = await Employee.countDocuments(query);
