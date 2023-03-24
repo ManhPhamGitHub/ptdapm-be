@@ -1,5 +1,5 @@
 const contractModel = require("../models/contractModel");
-
+const { unixDateToDate } = require("../utils")
 exports.updateContract = async (req, res) => {
   try {
     const id = req.params.id
@@ -16,9 +16,9 @@ exports.updateContract = async (req, res) => {
         const dataToUpdate = {
           contract_name,
           role,
-          contract_date,
-          start_date,
-          end_date,
+          contract_date: unixDateToDate(contract_date),
+          start_date: unixDateToDate(start_date),
+          end_date: unixDateToDate(end_date),
           status: "completed",
           email
         };
