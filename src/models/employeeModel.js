@@ -32,7 +32,7 @@ const employeeSchema = new mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: String,
+      type: Number,
       required: true,
     },
     departMentId: [

@@ -1,5 +1,6 @@
 const contractModel = require("../models/contractModel");
 const { unixDateToDate } = require("../utils")
+
 exports.updateContract = async (req, res) => {
   try {
     const id = req.params.id
@@ -38,7 +39,6 @@ exports.updateContract = async (req, res) => {
     res.send(error)
   }
 }
-
 
 exports.getContract = async (req, res) => {
   try {
