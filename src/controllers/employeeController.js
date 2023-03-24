@@ -240,10 +240,7 @@ const employeeController = {
           }
         ).then(() => {
           return Contract.findByIdAndUpdate(id, {
-            $set: {
               status:"cancelled",
-              is_deleted: true,
-            },
           });
         });
       });
