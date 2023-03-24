@@ -19,7 +19,9 @@ const benefitController = {
         status,
       });
 
-      res.status(200).json({ success: true, message: "Success", data: createdBenefit});
+      res
+        .status(200)
+        .json({ success: true, message: "Success", data: createdBenefit });
     } catch (err) {
       next(err);
     }
@@ -131,7 +133,11 @@ const benefitController = {
 
       res
         .status(200)
-        .json({ success: true, message: "update benefit successfully", data: updatedBenefit });
+        .json({
+          success: true,
+          message: "update benefit successfully",
+          data: updatedBenefit,
+        });
     } catch (err) {
       next(err);
     }

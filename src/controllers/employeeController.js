@@ -2,7 +2,7 @@ const Employee = require("../models/employeeModel");
 const Department = require("../models/departmentModel");
 const Benefit = require("../models/benefitModel");
 const Contract = require("../models/contractModel");
-const { unixDateToDate } = require('../utils')
+const { unixDateToDate } = require("../utils");
 
 const employeeController = {
   createEmployee: async (req, res, next) => {
@@ -24,7 +24,7 @@ const employeeController = {
         status,
         salaryRank,
         startDate,
-        position
+        position,
       } = req.body;
 
       let defaultEmp = {
@@ -38,14 +38,14 @@ const employeeController = {
         picturePath,
         salaryRank,
         status,
-        position
+        position,
+      };
+
+      if (startDate) {
+        const startDateConverted = unixDateToDate(startDate);
+        defaultEmp = { ...defaultEmp, startDate: startDateConverted };
       }
 
-      if(startDate) {
-        const startDateConverted = unixDateToDate(startDate)
-        defaultEmp = {...defaultEmp, startDate: startDateConverted}
-      }
-      
       let department = null;
       let benefit = null;
 
@@ -75,18 +75,6 @@ const employeeController = {
           oldDepartment.employeesId.splice(index, 1);
           await oldDepartment.save();
         }
-
-        const oldPosition = oldDepartment.positions.find((pos) =>
-          pos.employeeId.includes(employee._id)
-        );
-
-        if (oldPosition) {
-          const index = oldPosition.employeeId.indexOf(employee._id);
-          if (index !== -1) {
-            oldPosition.employeeId.splice(index, 1);
-            await oldDepartment.save();
-          }
-        }
       }
 
       const oldBenefit = await Benefit.findById(employee.benefitId);
@@ -111,15 +99,6 @@ const employeeController = {
         if (!department.employeesId.includes(employee._id)) {
           department.employeesId.push(employee._id);
         }
-
-        const checkPosition = department.positions.find(
-          (pos) => pos.id === queryPosition
-        );
-
-        if (!checkPosition?.employeeId.includes(employee._id)) {
-          checkPosition?.employeeId.push(employee._id);
-        }
-        employee.position = checkPosition?.name;
 
         if (!employee.departMentId.includes(department?._id)) {
           employee.departMentId = department._id;
@@ -150,7 +129,6 @@ const employeeController = {
         });
         employee.contractId = contract._id;
       }
-
 
       await employee.save();
       if (department) await department.save();
@@ -260,10 +238,10 @@ const employeeController = {
         ).then(() => {
           return Contract.findByIdAndUpdate(id, {
             $set: {
-              is_deleted: true
-            }
-          })
-        })
+              is_deleted: true,
+            },
+          });
+        });
       });
 
       res
