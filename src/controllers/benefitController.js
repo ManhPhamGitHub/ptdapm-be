@@ -40,6 +40,7 @@ const benefitController = {
       if (queryName) {
         query.name = { $regex: queryName, $options: "i" };
       }
+      query.is_deleted = { $eq: false };
 
       const startIndex = (activePage - 1) * limit;
       const totalRecord = await Benefit.countDocuments(query); // length các query theo filter
@@ -131,13 +132,11 @@ const benefitController = {
         }
       );
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "update benefit successfully",
-          data: updatedBenefit,
-        });
+      res.status(200).json({
+        success: true,
+        message: "update benefit successfully",
+        data: updatedBenefit,
+      });
     } catch (err) {
       next(err);
     }
