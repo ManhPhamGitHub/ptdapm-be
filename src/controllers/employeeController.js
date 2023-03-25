@@ -43,6 +43,7 @@ const employeeController = {
 
       if (startDate) {
         const startDateConverted = unixDateToDate(startDate);
+        console.log(startDateConverted);
         defaultEmp = { ...defaultEmp, startDate: startDateConverted };
       }
 
@@ -65,6 +66,20 @@ const employeeController = {
         employee.is_onBoar = queryBoar;
         employee.position = position;
         employee.startDate = unixDateToDate(startDate);
+      }
+
+      const existingEmployee = await Employee.findOne({
+        email,
+        is_deleted: false,
+      });
+
+      if (
+        existingEmployee &&
+        existingEmployee._id.toString() !== employee._id.toString()
+      ) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email already exists" });
       }
 
       const oldDepartment = await Department.findById(employee.departMentId);
@@ -127,19 +142,22 @@ const employeeController = {
 
       if (employee?.contractId?.length === 0 || !employee?.contractId) {
         const contract = await Contract.create({
-          contract_name: `${employee.codeEmployee}-${employee.position}` ,
-          email: employee.email,
-          employeeId: employee._id,
-          position: employee.position
-        });
-        employee.contractId = contract._id;
-      } else {
-        await Contract.findByIdAndUpdate(employee?.contractId,{
           contract_name: `${employee.codeEmployee}-${employee.position}`,
           email: employee.email,
           employeeId: employee._id,
-          position: employee.position
-        })
+          position: employee.position,
+        });
+        employee.contractId = contract._id;
+      } else {
+        const contract = await Contract.findByIdAndUpdate(
+          employee?.contractId,
+          {
+            contract_name: `${employee.codeEmployee}-${employee.position}`,
+            email: employee.email,
+            employeeId: employee._id,
+            position: employee.position,
+          }
+        );
       }
       res.status(200).json({ success: true, message: "Success" });
     } catch (err) {
@@ -192,8 +210,6 @@ const employeeController = {
         .skip(startIndex)
         .exec();
 
-      console.log(employeeList);
-
       res.status(200).json({ success: true, data: employeeList });
     } catch (err) {
       next(err);
@@ -226,16 +242,17 @@ const employeeController = {
           benefitId: [],
           position: "",
         },
-      })
+      });
 
-      await Department.updateMany({employeesId: id},
+      await Department.updateMany(
+        { employeesId: id },
         {
           $pull: {
             employeesId: id,
             "positions.$[].employeeId": id,
           },
         }
-      )
+      );
       const contract = await Contract.findByIdAndUpdate(employee.contractId, {
         status: "cancelled",
       });
