@@ -6,7 +6,7 @@ exports.updateContract = async (req, res) => {
     const id = req.params.id
     if (req.method == "DELETE") {
       await contractModel.findByIdAndUpdate({ _id: id }, { status: "cancelled" });
-      const dataContract = await contractModel.find({ status: { $in: ["pending", "completed"] } });
+      const dataContract = await contractModel.find();
       return res
         .status(200)
         .json({ success: true, data: dataContract, message: " Delete complete" })
@@ -24,7 +24,7 @@ exports.updateContract = async (req, res) => {
           email
         };
         await contractModel.findByIdAndUpdate({ _id: id }, dataToUpdate);
-        const dataContract = await contractModel.find({ status: { $in: ["pending", "completed"] } });
+        const dataContract = await contractModel.find();
         return res
           .status(200)
           .json({ success: true, data: dataContract, message: " Update complete" })
@@ -42,12 +42,13 @@ exports.updateContract = async (req, res) => {
 
 exports.getContract = async (req, res) => {
   try {
+    let dataContract
     if (!req.query.contract_name && !req.query.status) {
-      var dataContract = await contractModel.find({ status: { $in: ["pending", "completed","cancelled"] } });
+      dataContract = await contractModel.find();
     } else {
       const contract_name = req.query.contract_name;
       const status = req.query.status;
-      var dataContract = await contractModel.find({
+      dataContract = await contractModel.find({
         $or: [
           { contract_name: { $regex: contract_name, $options: "i" } },
           { status: status }
