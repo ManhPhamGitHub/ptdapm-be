@@ -73,7 +73,6 @@ const employeeController = {
         is_deleted: false,
       });
 
-      console.log(existingEmployee);
       if (
         existingEmployee &&
         existingEmployee._id.toString() !== employee._id.toString()
@@ -155,7 +154,6 @@ const employeeController = {
             position: employee.position,
           }
         );
-        console.log(contract);
       }
 
       await employee.save();
