@@ -17,9 +17,7 @@ const departmentController = {
         positions: [],
       });
       await department.save();
-      res
-        .status(200)
-        .json({ success: true, data: department });
+      res.status(200).json({ success: true, data: department });
     } catch (err) {
       next(err);
     }
@@ -49,6 +47,8 @@ const departmentController = {
       const departmentList = {};
 
       const startIndex = (activePage - 1) * limit;
+
+      query.is_deleted = { $eq: false };
 
       if (queryName) {
         query.name = { $regex: queryName, $options: "i" }; // lưu các filter email vào query

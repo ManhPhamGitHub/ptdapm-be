@@ -1,5 +1,6 @@
 const contractModel = require("../models/contractModel");
 const { unixDateToDate } = require("../utils")
+
 exports.updateContract = async (req, res) => {
   try {
     const id = req.params.id
@@ -39,15 +40,15 @@ exports.updateContract = async (req, res) => {
   }
 }
 
-
 exports.getContract = async (req, res) => {
   try {
+    let dataContract
     if (!req.query.contract_name && !req.query.status) {
-      var dataContract = await contractModel.find();
+      dataContract = await contractModel.find();
     } else {
       const contract_name = req.query.contract_name;
       const status = req.query.status;
-      var dataContract = await contractModel.find({
+      dataContract = await contractModel.find({
         $or: [
           { contract_name: { $regex: contract_name, $options: "i" } },
           { status: status }

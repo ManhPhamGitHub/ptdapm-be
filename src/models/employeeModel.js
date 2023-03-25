@@ -14,7 +14,6 @@ const employeeSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
     },
     address: {
       type: String,
@@ -32,7 +31,7 @@ const employeeSchema = new mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: String,
+      type: Number,
       required: true,
     },
     departMentId: [

@@ -2,7 +2,7 @@ const Employee = require("../models/employeeModel");
 const Department = require("../models/departmentModel");
 const Benefit = require("../models/benefitModel");
 const Contract = require("../models/contractModel");
-const { unixDateToDate } = require('../utils')
+const { unixDateToDate } = require("../utils");
 
 const employeeController = {
   createEmployee: async (req, res, next) => {
@@ -24,7 +24,7 @@ const employeeController = {
         status,
         salaryRank,
         startDate,
-        position
+        position,
       } = req.body;
 
       let defaultEmp = {
@@ -38,14 +38,15 @@ const employeeController = {
         picturePath,
         salaryRank,
         status,
-        position
+        position,
+      };
+
+      if (startDate) {
+        const startDateConverted = unixDateToDate(startDate);
+        console.log(startDateConverted);
+        defaultEmp = { ...defaultEmp, startDate: startDateConverted };
       }
 
-      if(startDate) {
-        const startDateConverted = unixDateToDate(startDate)
-        defaultEmp = {...defaultEmp, startDate: startDateConverted}
-      }
-      
       let department = null;
       let benefit = null;
 
@@ -67,6 +68,20 @@ const employeeController = {
         employee.startDate = unixDateToDate(startDate);
       }
 
+      const existingEmployee = await Employee.findOne({
+        email,
+        is_deleted: false,
+      });
+
+      if (
+        existingEmployee &&
+        existingEmployee._id.toString() !== employee._id.toString()
+      ) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email already exists" });
+      }
+
       const oldDepartment = await Department.findById(employee.departMentId);
       if (oldDepartment) {
         const index = oldDepartment.employeesId.indexOf(employee._id);
@@ -74,18 +89,6 @@ const employeeController = {
         if (index !== -1) {
           oldDepartment.employeesId.splice(index, 1);
           await oldDepartment.save();
-        }
-
-        const oldPosition = oldDepartment.positions.find((pos) =>
-          pos.employeeId.includes(employee._id)
-        );
-
-        if (oldPosition) {
-          const index = oldPosition.employeeId.indexOf(employee._id);
-          if (index !== -1) {
-            oldPosition.employeeId.splice(index, 1);
-            await oldDepartment.save();
-          }
         }
       }
 
@@ -112,15 +115,6 @@ const employeeController = {
           department.employeesId.push(employee._id);
         }
 
-        const checkPosition = department.positions.find(
-          (pos) => pos.id === queryPosition
-        );
-
-        if (!checkPosition?.employeeId.includes(employee._id)) {
-          checkPosition?.employeeId.push(employee._id);
-        }
-        employee.position = checkPosition?.name;
-
         if (!employee.departMentId.includes(department?._id)) {
           employee.departMentId = department._id;
         }
@@ -142,20 +136,29 @@ const employeeController = {
         }
       }
 
-      if (employee?.contractId?.length === 0 || !employee?.contractId) {
-        const contract = await Contract.create({
-          contract_name: employee.name,
-          email: employee.email,
-          employeeId: employee._id,
-        });
-        employee.contractId = contract._id;
-      }
-
-
       await employee.save();
       if (department) await department.save();
       if (benefit) await benefit.save();
 
+      if (employee?.contractId?.length === 0 || !employee?.contractId) {
+        const contract = await Contract.create({
+          contract_name: `${employee.codeEmployee}-${employee.position}`,
+          email: employee.email,
+          employeeId: employee._id,
+          position: employee.position,
+        });
+        employee.contractId = contract._id;
+      } else {
+        const contract = await Contract.findByIdAndUpdate(
+          employee?.contractId,
+          {
+            contract_name: `${employee.codeEmployee}-${employee.position}`,
+            email: employee.email,
+            employeeId: employee._id,
+            position: employee.position,
+          }
+        );
+      }
       res.status(200).json({ success: true, message: "Success" });
     } catch (err) {
       next(err);
@@ -163,11 +166,9 @@ const employeeController = {
   },
 
   getEmployeePagination: async (req, res, next) => {
-    const queryText = req.query.text;
+    const queryText = req.query.text || "";
     const queryDepartment = req.query.department;
     const queryPosition = req.query.position;
-    const queryDelete = req.query.is_deleted;
-
     const activePage = +req.query.page || 1;
     const limit = +req.query.limit || 50;
 
@@ -177,11 +178,10 @@ const employeeController = {
 
       const startIndex = (activePage - 1) * limit;
 
+      query.is_deleted = { $eq: false };
+
       if (queryText) {
-        query["$or"] = [
-          { name: { $regex: queryText, $options: "i" } },
-          { email: { $regex: queryText, $options: "i" } },
-        ];
+        query["$or"] = [{ name: { $regex: queryText, $options: "i" } }];
       }
 
       if (queryDepartment) {
@@ -193,10 +193,6 @@ const employeeController = {
 
       if (queryPosition) {
         query.position = { $regex: queryPosition, $options: "i" };
-      }
-
-      if (queryDelete) {
-        query.is_deleted = { $eq: queryDelete };
       }
 
       const totalRecord = await Employee.countDocuments(query);
@@ -239,33 +235,27 @@ const employeeController = {
     try {
       const { id, contractId } = req.params;
 
-      await Employee.findByIdAndUpdate(id, {
+      const employee = await Employee.findByIdAndUpdate(id, {
         $set: {
           is_deleted: true,
           departMentId: [],
           benefitId: [],
           position: "",
         },
-      }).then(async () => {
-        return Department.updateMany(
-          {
-            employeesId: id,
-          },
-          {
-            $pull: {
-              employeesId: id,
-              "positions.$[].employeeId": id,
-            },
-          }
-        ).then(() => {
-          return Contract.findByIdAndUpdate(id, {
-            $set: {
-              is_deleted: true
-            }
-          })
-        })
       });
 
+      await Department.updateMany(
+        { employeesId: id },
+        {
+          $pull: {
+            employeesId: id,
+            "positions.$[].employeeId": id,
+          },
+        }
+      );
+      const contract = await Contract.findByIdAndUpdate(employee.contractId, {
+        status: "cancelled",
+      });
       res
         .status(200)
         .json({ success: true, message: "Delete employee Successfully" });
