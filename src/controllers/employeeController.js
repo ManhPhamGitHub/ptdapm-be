@@ -123,15 +123,15 @@ const employeeController = {
 
       if (employee?.contractId?.length === 0 || !employee?.contractId) {
         const contract = await Contract.create({
-          contract_name: employee.name,
+          contract_name: `${employee.codeEmployee}-${employee.position}` ,
           email: employee.email,
           employeeId: employee._id,
           position: employee.position
         });
         employee.contractId = contract._id;
       } else {
-        await Contract.save({
-          contract_name: employee.name,
+        await Contract.findByIdAndUpdate(employee?.contractId,{
+          contract_name: `${employee.codeEmployee}-${employee.position}`,
           email: employee.email,
           employeeId: employee._id,
           position: employee.position
