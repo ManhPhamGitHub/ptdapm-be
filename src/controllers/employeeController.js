@@ -43,6 +43,7 @@ const employeeController = {
 
       if (startDate) {
         const startDateConverted = unixDateToDate(startDate);
+        console.log(startDateConverted);
         defaultEmp = { ...defaultEmp, startDate: startDateConverted };
       }
 
@@ -65,6 +66,21 @@ const employeeController = {
         employee.is_onBoar = queryBoar;
         employee.position = position;
         employee.startDate = unixDateToDate(startDate);
+      }
+
+      const existingEmployee = await Employee.findOne({
+        email,
+        is_deleted: false,
+      });
+
+      console.log(existingEmployee);
+      if (
+        existingEmployee &&
+        existingEmployee._id.toString() !== employee._id.toString()
+      ) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email already exists" });
       }
 
       const oldDepartment = await Department.findById(employee.departMentId);
@@ -123,11 +139,23 @@ const employeeController = {
 
       if (employee?.contractId?.length === 0 || !employee?.contractId) {
         const contract = await Contract.create({
-          contract_name: employee.name,
+          contract_name: `${employee.codeEmployee}-${employee.position}`,
           email: employee.email,
           employeeId: employee._id,
+          position: employee.position,
         });
         employee.contractId = contract._id;
+      } else {
+        const contract = await Contract.findByIdAndUpdate(
+          employee?.contractId,
+          {
+            contract_name: `${employee.codeEmployee}-${employee.position}`,
+            email: employee.email,
+            employeeId: employee._id,
+            position: employee.position,
+          }
+        );
+        console.log(contract);
       }
 
       await employee.save();
@@ -185,8 +213,6 @@ const employeeController = {
         .skip(startIndex)
         .exec();
 
-      console.log(employeeList);
-
       res.status(200).json({ success: true, data: employeeList });
     } catch (err) {
       next(err);
@@ -212,33 +238,27 @@ const employeeController = {
     try {
       const { id, contractId } = req.params;
 
-      await Employee.findByIdAndUpdate(id, {
+      const employee = await Employee.findByIdAndUpdate(id, {
         $set: {
           is_deleted: true,
           departMentId: [],
           benefitId: [],
           position: "",
         },
-      }).then(async () => {
-        return Department.updateMany(
-          {
-            employeesId: id,
-          },
-          {
-            $pull: {
-              employeesId: id,
-              "positions.$[].employeeId": id,
-            },
-          }
-        ).then(() => {
-          return Contract.findByIdAndUpdate(id, {
-            $set: {
-              is_deleted: true,
-            },
-          });
-        });
       });
 
+      await Department.updateMany(
+        { employeesId: id },
+        {
+          $pull: {
+            employeesId: id,
+            "positions.$[].employeeId": id,
+          },
+        }
+      );
+      const contract = await Contract.findByIdAndUpdate(employee.contractId, {
+        status: "cancelled",
+      });
       res
         .status(200)
         .json({ success: true, message: "Delete employee Successfully" });
