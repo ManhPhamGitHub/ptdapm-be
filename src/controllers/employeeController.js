@@ -25,6 +25,7 @@ const employeeController = {
         salaryRank,
         startDate,
         position,
+        faculty
       } = req.body;
 
       let defaultEmp = {
@@ -39,6 +40,7 @@ const employeeController = {
         salaryRank,
         status,
         position,
+        faculty
       };
 
       if (startDate) {
@@ -66,6 +68,7 @@ const employeeController = {
         employee.is_onBoar = queryBoar;
         employee.position = position;
         employee.startDate = unixDateToDate(startDate);
+        employee.faculty = faculty
       }
 
       const existingEmployee = await Employee.findOne({
