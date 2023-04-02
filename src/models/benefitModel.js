@@ -41,8 +41,8 @@ const benefitSchema = new mongoose.Schema(
     holiday: [holidaySchema],
     status: {
       type: String,
-      enum: ["Kích Hoạt", "Chưa Kích Hoạt"],
-      default: "Kích Hoạt",
+      enum: ["Kích hoạt", "Chưa kích hoạt"],
+      default: "Kích hoạt",
     },
     is_deleted: {
       type: Boolean,
