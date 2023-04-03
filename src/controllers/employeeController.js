@@ -27,7 +27,6 @@ const employeeController = {
       // VALIDATE EMAIL
       const existingEmployee = await Employee.findOne({
         email,
-        is_deleted: false,
       });
       if (existingEmployee) {
         return res
@@ -119,6 +118,7 @@ const employeeController = {
         email,
         // is_deleted: false,
       });
+      console.log('existingEmployee :>> ', existingEmployee);
       if (existingEmployee) {
         return res
           .status(400)
