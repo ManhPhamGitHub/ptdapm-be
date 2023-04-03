@@ -31,7 +31,7 @@ const employeeSchema = new mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: String,
+      type: Number,
       required: true,
     },
     departMentId: [
@@ -54,7 +54,9 @@ const employeeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Contract",
     },
-
+    faculty: {
+      type: String,
+    },
     salaryRank: {
       type: Number,
       default: 1,
