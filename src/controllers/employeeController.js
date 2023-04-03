@@ -8,8 +8,6 @@ const employeeController = {
   createEmployee: async (req, res, next) => {
     const queryDepartment = req.query.department;
     const queryBenefit = req.query.benefit;
-    const queryPosition = req.query.position;
-    const queryBoar = req.query.boar;
 
     try {
       const picturePath = req?.files?.length > 0 ? req.files[0].name : null;
@@ -23,7 +21,79 @@ const employeeController = {
         phoneNumber,
         status,
         salaryRank,
-        startDate,
+        position,
+      } = req.body;
+
+      // VALIDATE EMAIL
+      const existingEmployee = await Employee.findOne({
+        email,
+        is_deleted: false,
+      });
+      if (existingEmployee) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email already exists" });
+      }
+
+      const employee = new Employee({
+        codeEmployee,
+        name,
+        email,
+        address,
+        BirthOfDate,
+        gender,
+        phoneNumber,
+        picturePath,
+        salaryRank,
+        status,
+        position,
+        departMentId: [queryDepartment],
+        benefitId: [queryBenefit],
+      });
+
+      // ADD EMPLOYEE FOR DEPARTMENT AND BENEFIT
+      await Department.findByIdAndUpdate(queryDepartment, {
+        $addToSet: { employeesId: employee._id },
+      });
+
+      await Benefit.findByIdAndUpdate(queryBenefit, {
+        $addToSet: { beneficiariesId: employee._id },
+      });
+
+      // CREATE CONTRACT
+      const contract = await Contract.create({
+        contract_name: `${employee.codeEmployee}-${employee.position}`,
+        email: employee.email,
+        employeeId: employee._id,
+        position: employee.position,
+      });
+      employee.contractId = contract._id;
+
+      await employee.save();
+
+      res.status(200).json({ success: true, message: "Success" });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  updateEmployee: async (req, res, next) => {
+    const { employeeId } = req.params;
+    const queryDepartment = req.query.department;
+    const queryBenefit = req.query.benefit;
+
+    try {
+      const picturePath = req?.files?.length > 0 ? req.files[0].name : null;
+      const {
+        codeEmployee,
+        name,
+        email,
+        address,
+        BirthOfDate,
+        gender,
+        phoneNumber,
+        status,
+        salaryRank,
         position,
       } = req.body;
 
@@ -41,124 +111,58 @@ const employeeController = {
         position,
       };
 
-      if (startDate) {
-        const startDateConverted = unixDateToDate(startDate);
-        console.log(startDateConverted);
-        defaultEmp = { ...defaultEmp, startDate: startDateConverted };
-      }
-
-      let department = null;
-      let benefit = null;
-
-      let employee = await Employee.findOne({ codeEmployee });
-      if (!employee) {
-        employee = new Employee(defaultEmp);
-      } else {
-        employee.name = name;
-        employee.email = email;
-        employee.address = address;
-        employee.BirthOfDate = BirthOfDate;
-        employee.gender = gender;
-        employee.phoneNumber = phoneNumber;
-        employee.picturePath = picturePath;
-        employee.status = status;
-        employee.salaryRank = salaryRank;
-        employee.is_onBoar = queryBoar;
-        employee.position = position;
-        employee.startDate = unixDateToDate(startDate);
-      }
+      let department = await Department.findById(queryDepartment);
+      let benefit = await Benefit.findById(queryBenefit);
 
       const existingEmployee = await Employee.findOne({
+        _id: { $ne: employeeId },
         email,
         is_deleted: false,
       });
-
-      if (
-        existingEmployee &&
-        existingEmployee._id.toString() !== employee._id.toString()
-      ) {
+      if (existingEmployee) {
         return res
           .status(400)
           .json({ success: false, message: "Email already exists" });
       }
 
-      const oldDepartment = await Department.findById(employee.departMentId);
-      if (oldDepartment) {
-        const index = oldDepartment.employeesId.indexOf(employee._id);
+      const newDataEmployee = await Employee.findByIdAndUpdate(
+        employeeId,
+        { $set: defaultEmp },
+        { new: true }
+      );
 
-        if (index !== -1) {
-          oldDepartment.employeesId.splice(index, 1);
-          await oldDepartment.save();
+      // Remove employee from previous department and benefit
+      await Department.findByIdAndUpdate(newDataEmployee.departMentId, {
+        $pull: { employeesId: employeeId },
+      });
+      await Benefit.findByIdAndUpdate(newDataEmployee.benefitId, {
+        $pull: { beneficiariesId: employeeId },
+      });
+
+      // Add employee to new department and benefit
+      newDataEmployee.departMentId = [queryDepartment];
+      newDataEmployee.benefitId = [queryBenefit];
+      department.employeesId.push(newDataEmployee._id);
+      benefit.beneficiariesId.push(newDataEmployee._id);
+
+      // Update contract email
+      await Contract.updateOne(
+        { employeeId },
+        {
+          $set: {
+            contract_name: `${newDataEmployee.codeEmployee}-${newDataEmployee.position}`,
+            email: newDataEmployee.email,
+            employeeId: newDataEmployee._id,
+            position: newDataEmployee.position,
+          },t
         }
-      }
+      );
 
-      const oldBenefit = await Benefit.findById(employee.benefitId);
-      if (oldBenefit) {
-        const index = oldBenefit.beneficiariesId.indexOf(employee._id);
-
-        if (index !== -1) {
-          oldBenefit.beneficiariesId.splice(index, 1);
-          await oldBenefit.save();
-        }
-      }
-
-      // Xử lý department
-      if (queryDepartment) {
-        department = await Department.findById(queryDepartment);
-
-        if (!department)
-          return res
-            .status(404)
-            .json({ success: false, message: "Department not found" });
-
-        if (!department.employeesId.includes(employee._id)) {
-          department.employeesId.push(employee._id);
-        }
-
-        if (!employee.departMentId.includes(department?._id)) {
-          employee.departMentId = department._id;
-        }
-      }
-
-      // Xử lý benefit
-      if (queryBenefit) {
-        benefit = await Benefit.findById(queryBenefit);
-
-        if (!benefit) {
-          return res
-            .status(404)
-            .json({ success: false, message: "Benefit not found" });
-        }
-
-        if (!benefit.beneficiariesId.includes(employee._id)) {
-          benefit.beneficiariesId.push(employee._id);
-          employee.benefitId = benefit._id;
-        }
-      }
-
-      if (employee?.contractId?.length === 0 || !employee?.contractId) {
-        const contract = await Contract.create({
-          contract_name: `${employee.codeEmployee}-${employee.position}`,
-          email: employee.email,
-          employeeId: employee._id,
-          position: employee.position,
-        });
-        employee.contractId = contract._id;
-      } else {
-        const contract = await Contract.findByIdAndUpdate(
-          employee?.contractId,
-          {
-            contract_name: `${employee.codeEmployee}-${employee.position}`,
-            email: employee.email,
-            employeeId: employee._id,
-            position: employee.position,
-          }
-        );
-      }
-
-      await employee.save();
-      if (department) await department.save();
-      if (benefit) await benefit.save();
+      await Promise.all([
+        newDataEmployee.save(),
+        department.save(),
+        benefit.save(),
+      ]);
 
       res.status(200).json({ success: true, message: "Success" });
     } catch (err) {
