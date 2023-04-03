@@ -22,6 +22,7 @@ const employeeController = {
         status,
         salaryRank,
         position,
+        faculty,
       } = req.body;
 
       // VALIDATE EMAIL
@@ -46,6 +47,7 @@ const employeeController = {
         salaryRank,
         status,
         position,
+        faculty,
         departMentId: [queryDepartment],
         benefitId: [queryBenefit],
       });
@@ -94,6 +96,7 @@ const employeeController = {
         status,
         salaryRank,
         position,
+        faculty
       } = req.body;
 
       let defaultEmp = {
@@ -108,6 +111,7 @@ const employeeController = {
         salaryRank,
         status,
         position,
+        faculty
       };
 
       let department = await Department.findById(queryDepartment);
