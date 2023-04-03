@@ -183,7 +183,7 @@ const employeeController = {
 
       const startIndex = (activePage - 1) * limit;
 
-      query.is_deleted = { $eq: false };
+      // query.is_deleted = { $eq: false };
 
       if (queryText) {
         query["$or"] = [{ name: { $regex: queryText, $options: "i" } }];
