@@ -139,10 +139,8 @@ const employeeController = {
         }
       }
 
-      await employee.save();
       if (department) await department.save();
       if (benefit) await benefit.save();
-
       if (employee?.contractId?.length === 0 || !employee?.contractId) {
         const contract = await Contract.create({
           contract_name: `${employee.codeEmployee}-${employee.position}`,
@@ -162,6 +160,7 @@ const employeeController = {
           }
         );
       }
+      await employee.save();
       res.status(200).json({ success: true, message: "Success" });
     } catch (err) {
       next(err);
