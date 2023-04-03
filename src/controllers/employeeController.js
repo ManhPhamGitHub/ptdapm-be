@@ -117,7 +117,7 @@ const employeeController = {
       const existingEmployee = await Employee.findOne({
         _id: { $ne: employeeId },
         email,
-        is_deleted: false,
+        // is_deleted: false,
       });
       if (existingEmployee) {
         return res
@@ -154,7 +154,7 @@ const employeeController = {
             email: newDataEmployee.email,
             employeeId: newDataEmployee._id,
             position: newDataEmployee.position,
-          },t
+          },
         }
       );
 

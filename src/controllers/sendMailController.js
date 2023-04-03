@@ -12,14 +12,15 @@ exports.sendmail = async (req, res) => {
         pass: ORIGINAL_MAIL_PASS
       }
     })
+
     const mailOptions = {
-      from: 'Xin chào <minhcutebn01@gmail.com>',
+      from: 'Đại học Thuỷ Lợi thông báo <minhcutebn01@gmail.com>',
       bcc: email,
       subject: title,
-      text: content,
-      html: '<h1 style="font-family: Times New Roman">Xin chào </h1><p>Bạn có thông báo mới !!!</p>'
+      html: content
     }
-    await transporter.sendMail(mailOptions, (error) => {
+    
+    transporter.sendMail(mailOptions, (error) => {
       if (error) {
         res.status(500).send({ success: false, message: "Error sending email", error });
       } else {
