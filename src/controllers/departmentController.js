@@ -6,7 +6,8 @@ const departmentController = {
     try {
       const { code, name } = req.body;
       const departmentCheck = await Department.findOne({ code });
-      if (departmentCheck)
+      const isAlreadyHaveDepartmentName = await Department.findOne({ name });
+      if (departmentCheck || isAlreadyHaveDepartmentName)
         return res
           .status(404)
           .json({ success: false, message: "Department already exists" });
