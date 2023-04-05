@@ -122,7 +122,7 @@ const employeeController = {
         email,
         // is_deleted: false,
       });
-      console.log('existingEmployee :>> ', existingEmployee);
+
       if (existingEmployee) {
         return res
           .status(400)
@@ -143,6 +143,7 @@ const employeeController = {
         $pull: { beneficiariesId: employeeId },
       });
 
+      console.log('department :>> ', department);
       // Add employee to new department and benefit
       newDataEmployee.departMentId = [queryDepartment];
       newDataEmployee.benefitId = [queryBenefit];
