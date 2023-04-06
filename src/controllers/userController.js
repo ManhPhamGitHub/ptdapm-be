@@ -142,7 +142,7 @@ const userController = {
 
       res
         .status(200)
-        .json({ status: true, msg: "Change password successfully" });
+        .json({ success: true, msg: "Change password successfully" });
     } catch (err) {
       next(err);
     }
