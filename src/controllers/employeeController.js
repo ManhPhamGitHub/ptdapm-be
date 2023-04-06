@@ -96,7 +96,8 @@ const employeeController = {
         status,
         salaryRank,
         position,
-        faculty
+        faculty,
+        startDate
       } = req.body;
 
       let defaultEmp = {
@@ -111,7 +112,8 @@ const employeeController = {
         salaryRank,
         status,
         position,
-        faculty
+        faculty,
+        startDate: unixDateToDate(startDate)
       };
 
       let department = await Department.findById(queryDepartment);
@@ -143,12 +145,11 @@ const employeeController = {
         $pull: { beneficiariesId: employeeId },
       });
 
-      console.log('department :>> ', department);
       // Add employee to new department and benefit
       newDataEmployee.departMentId = [queryDepartment];
       newDataEmployee.benefitId = [queryBenefit];
-      department.employeesId.push(newDataEmployee._id);
-      benefit.beneficiariesId.push(newDataEmployee._id);
+      department?.employeesId.push(newDataEmployee._id);
+      benefit?.beneficiariesId.push(newDataEmployee._id);
 
       // Update contract email
       await Contract.updateOne(
@@ -165,8 +166,8 @@ const employeeController = {
 
       await Promise.all([
         newDataEmployee.save(),
-        department.save(),
-        benefit.save(),
+        department?.save(),
+        benefit?.save(),
       ]);
 
       res.status(200).json({ success: true, message: "Success" });
