@@ -1,0 +1,22 @@
+.edit__contract-label{
+    font-weight: 500;
+    margin-top: 12px;
+}
+.edit__contract-row{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.contract__search{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+.contract__action{
+    text-align: center;
+    &:hover {
+        span {
+            color: var(--primary-color);
+        }
+    }
+}
