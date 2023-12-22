@@ -1,11 +1,11 @@
 FROM node:lts-buster-slim AS development
 
-WORKDIR /usr/src/appcdd 
+WORKDIR /usr/src/app
 
 COPY package.json /usr/src/app/package.json
 COPY package-lock.json /usr/src/app/package-lock.json
 
-RUN npm ci
+RUN npm i
 
 COPY . /usr/src/app
 
