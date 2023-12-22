@@ -1,0 +1,25 @@
+services:
+  backend:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/app
+    depends_on:
+      - mongo
+    networks:
+      - express-mongo
+    ports:
+      - 8001:8001
+  mongo:
+    restart: always
+    image: mongo:4.2.0
+    volumes:
+      - ./data:/data/db
+    networks:
+      - express-mongo
+    ports:
+      - 27017:27017
+networks:
+  express-mongo:
