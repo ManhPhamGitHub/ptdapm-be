@@ -2,7 +2,7 @@ import defaultAvatar from '../assets/images/default_avatar.jpg';
 import process from 'process/browser';
 
 export const getAPIHostName = () => {
-  return process.env.NODE_ENV === 'development' ? 'http://localhost:8001/api/v1' : process.env.BACKEND_BASE_URL;
+  return process.env.BACKEND_BASE_URL;
 };
 
 export const normalizeDate = date => {
