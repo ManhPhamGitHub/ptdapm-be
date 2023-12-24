@@ -11,7 +11,7 @@ services:
     networks:
       - express-mongo
     ports:
-      - 8001:8001
+      - 8003:8001
   mongo:
     restart: always
     image: mongo:4.2.0
