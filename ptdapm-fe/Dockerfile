@@ -9,6 +9,6 @@ RUN npm ci
 
 COPY . /usr/src/app
 
-EXPOSE 3000
+EXPOSE 8004
 
 CMD ["npm","run","start"]
