@@ -4,7 +4,7 @@ services:
       context: ./ptdapm-fe
       dockerfile: ./Dockerfile
     ports:
-      - 8004:8004
+      - 8004:3000
     stdin_open: true
     volumes:
       - ./:/app
@@ -26,7 +26,7 @@ services:
       - express-mongo
       - react-express
     ports:
-      - 8003:8003
+      - 8003:8001
   mongo:
     restart: always
     image: mongo:4.2.0
