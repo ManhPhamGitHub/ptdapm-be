@@ -2,6 +2,7 @@ import defaultAvatar from '../assets/images/default_avatar.jpg';
 import process from 'process/browser';
 
 export const getAPIHostName = () => {
+  console.log('process.env.BACKEND_BASE_URL', process.env.BACKEND_BASE_URL);
   return process.env.BACKEND_BASE_URL;
 };
 
