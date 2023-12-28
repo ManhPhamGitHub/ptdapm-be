@@ -1,0 +1,41 @@
+services:
+  frontend:
+    build:
+      context: ./ptdapm-fe
+      dockerfile: ./Dockerfile
+    ports:
+      - 8004:3000
+    stdin_open: true
+    volumes:
+      - ./:/app
+    depends_on:
+      - backend
+    networks:
+      - react-express
+
+  backend:
+    restart: always
+    build:
+      context: ./ptdapm-be
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/app
+    depends_on:
+      - mongo
+    networks:
+      - express-mongo
+      - react-express
+    ports:
+      - 8003:8001
+  mongo:
+    restart: always
+    image: mongo:4.2.0
+    volumes:
+      - ./data:/data/db
+    networks:
+      - express-mongo
+    ports:
+      - 27017:27017
+networks:
+  express-mongo:
+  react-express:
