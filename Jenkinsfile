@@ -27,6 +27,7 @@ pipeline {
         stage('Test App'){
             steps{
                 echo ' Testing successs221321'
+                sh 'ls -a'
             }
         }
         stage('Build package'){
