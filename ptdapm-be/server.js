@@ -10,27 +10,27 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const path = require("path")
+const path = require("path");
 const app = express();
-const multer = require('multer');
+const multer = require("multer");
 
 // Middlewares
 app.use(cors());
 app.use(helmet());
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 let diskStore = multer.diskStorage({
-  destination:(_, ___, cb)=>{
-    cb(null,path.join(__dirname, '/dummy-files'))
+  destination: (_, ___, cb) => {
+    cb(null, path.join(__dirname, "/dummy-files"));
   },
-  filename:(_, file, cb)=>{
-    cb(null,file.originalname)
-  }
-})
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
 
-const upload = multer({ storage: diskStore }).any()
-app.use(upload)
+const upload = multer({ storage: diskStore }).any();
+app.use(upload);
 // app.use(express.static('public'));
 
 const routes = require("./src/routes/index");
@@ -46,7 +46,7 @@ app.all("*", (req, res, next) => {
 });
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
